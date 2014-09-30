@@ -8,17 +8,22 @@
     top: 50%
     left: 0
 
+    .left, .right
+      top: 50%
+      opacity: 0.1
+
+      &.actionable
+        opacity: 1.0
+
     .left
       position: absolute
       left: 0
-      top: 50%
-      z-index: 2
+      z-index: 3
     
     .right
       position: absolute
       right: 0
-      top: 50%
-      z-index: 2
+      z-index: 3
 
   .icon
     +transition(opacity 200ms ease)
@@ -32,12 +37,16 @@
       color: white
 
   .playlist-container
-    +transition(all 300ms ease, transform 500ms ease)
-    +transform(translateX(1000px))
+    +transition(opacity 400ms ease, transform 600ms ease)
+    +transform(translateX(250px))
     position: relative
     opacity: 0.0
     z-index: 1
 
+    &.prev
+      +transform(translateX(-250px))
+
     &.active
       opacity: 1.0
+      z-index: 2
       +transform(translateX(0px))

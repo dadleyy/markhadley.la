@@ -1,8 +1,8 @@
 .discography
   .controls
-    .left
+    .left(ng-class="{actionable: active_index > 0}")
       button.ion.icon.left(ng-click="nav(-1)")
-    .right
+    .right(ng-class="{actionable: active_index < playlists.length - 1}")
       button.ion.icon.right(ng-click="nav(1)")
-  .playlist-container(ng-repeat="playlist in playlists" ng-class="{active: $index === active_index}")
+  .playlist-container(ng-repeat="playlist in playlists" ng-class="{active: $index === active_index, prev: $index === active_index - 1, next: $index === (active_index + 1)}")
     .playlist(mh-playlist playlist="playlist" index="$index")

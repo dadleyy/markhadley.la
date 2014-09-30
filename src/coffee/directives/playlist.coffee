@@ -9,6 +9,46 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
   start_radius = 60
   SPIN_SPEED = 0.5
 
+  class Ring
+
+    constructor: (@group, @path, @speed) ->
+      @position = { x: 0, y: 0 }
+      @rotation = 0
+      @stopped = false
+      @listeners =
+        click: []
+
+      over = () =>
+        @stopped = true
+      
+      out = () =>
+        @stopped = false
+  
+      click = () =>
+        fn() for fn in @listeners['click']
+
+      @group
+        .on 'mouseover', over
+        .on 'mouseout', out
+        .on 'click', click
+
+    move: (x_pos, y_pos) ->
+      @position.x = x_pos
+      @position.y = y_pos
+
+    rotate: (degrees) ->
+      unless @stopped
+        @rotation += degrees * @speed
+
+    update: () ->
+      translate = ['translate(', @position.x, ',', @position.y, ')'].join ''
+      rotate = ['rotate(', @rotation, ')'].join ''
+      @group.attr 'transform', [translate, rotate].join(' ')
+
+    on: (evt, fn) ->
+      if @listeners[evt] && angular.isFunction(fn)
+        @listeners[evt].push fn
+
   randspeed = (indx) ->
     large = (Math.random() * 100) % 2
     large - 1
@@ -27,14 +67,10 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
       svg = d_el.append 'svg'
       total_duration = 0
       rings = []
-      speeds = []
       arc_gen = null
       loop_id = null
       width = 100
       height = 100
-      theta = 0
-
-      speeds.push randspeed(index) for track, index in $scope.playlist.tracks
 
       arcInner = (data, indx) ->
         start_radius + (indx * arc_inc)
@@ -48,7 +84,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
 
       arcStart = (data, indx) -> 0
 
-      addPlaylist = (track, indx) ->
+      addTrack = (track, indx) ->
         grp = svg.append 'g'
         path = grp.append 'path'
 
@@ -56,12 +92,18 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
         path.attr 'd', () -> arc_gen(track, indx)
         path.attr 'fill', 'red'
 
-        rings.push grp
+        ring = new Ring grp, path, randspeed(indx)
+
+        click = () ->
+          console.log track
+
+        ring.on 'click', click
+        rings.push ring
 
       position = (ring, indx) ->
-        translate = ['translate(', width * 0.5, ',', height * 0.5, ')'].join ''
-        rotate = ['rotate(', theta * speeds[indx], ')'].join ''
-        ring.attr 'transform', [translate, rotate].join(' ')
+        ring.move width * 0.5, height * 0.5
+        ring.rotate SPIN_SPEED
+        ring.update()
 
       resize = () ->
         total_duration += tof(track.duration) for track in $scope.playlist.tracks
@@ -81,7 +123,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
         .outerRadius arcOuter
 
       spin = () ->
-        theta += SPIN_SPEED
         position ring, rindx for ring, rindx in rings
 
       stopSpin = () ->
@@ -99,7 +140,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
           stopSpin()
 
       Viewport.addListener resize
-      addPlaylist track, index for track, index in $scope.playlist.tracks
+      addTrack track, index for track, index in $scope.playlist.tracks
       resize()
       $scope.$on 'playlist_change', toggle
 

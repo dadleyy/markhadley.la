@@ -9,13 +9,14 @@ mh.directive 'mhDiscography', ['$timeout', 'Viewport', ($timeout, Viewport) ->
       $scope.active_index = 0
 
       $scope.nav = (inc) ->
+        right_bound = $scope.playlists.length - 1
         $scope.active_index += inc
 
         if $scope.active_index < 0
-          $scope.active_index = $scope.playlists.length
-
-        if $scope.active_index > $scope.playlists.length - 1
           $scope.active_index = 0
+
+        if $scope.active_index > right_bound
+          $scope.active_index = right_bound
 
         $scope.$broadcast 'playlist_change', $scope.active_index
 
