@@ -1,4 +1,4 @@
-mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', (Viewport, Loop, Audio) ->
+mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Loop, Audio, COLORS) ->
 
   tof = (num) ->
     parseFloat num
@@ -124,7 +124,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', (Viewport, Loop, Audio)
 
         grp.attr 'data-track', track.title
         path.attr 'd', () -> arc_gen(track, indx)
-        path.attr 'fill', 'red'
+
+        if COLORS.tracks[track.id]
+          path.attr 'fill', COLORS[track.id]
+        else if COLORS.playlists[$scope.playlist.id]
+          playlist_colors = COLORS.playlists[$scope.playlist.id]
+          color_indx = indx % playlist_colors.length
+          console.log playlist_colors[color_indx]
+          path.attr 'fill', playlist_colors[indx % playlist_colors.length]
+        else
+          path.attr 'fill', 'red'
 
         ring = new TrackRing track, grp, path, randspeed(indx)
 

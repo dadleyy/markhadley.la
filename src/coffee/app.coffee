@@ -5,6 +5,7 @@ mh = do () ->
     data = response.data
     mh.value 'URLS', data.urls
     mh.value 'GOOGLE', data.google
+    mh.value 'COLORS', if data.colors then data.colors else {}
 
     if data.soundcloud and data.soundcloud.client_id
       client_id = atob data.soundcloud.client_id
