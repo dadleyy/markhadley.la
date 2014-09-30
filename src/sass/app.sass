@@ -1,6 +1,7 @@
 @import "base"
 @import "shared/reset"
 @import "shared/iconography"
+@import "shared/typeography"
 
 html, body
   position: relative
@@ -9,6 +10,25 @@ html, body
   background: $body-bg
   color: $off-white
 
+.page
+  +calc("height", "100% - 50px")
+  position: relative
+  width: 100%
+
+[ng-view]
+  position: relative
+  width: 100%
+  height: 100%
+
+.view
+  +clearfix
+
+  .container
+    +outer-container
+    position: relative
+
 @import "views/bio"
 @import "views/discography"
 @import "directives/header"
+@import "directives/playlist"
+@import "directives/discography"

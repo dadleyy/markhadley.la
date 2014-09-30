@@ -4,6 +4,9 @@
   display: inline-block
   position: relative
   padding: 3px
+  background: transparent
+  border: none
+  outline: none
 
   &:after
     content: ''
@@ -14,12 +17,18 @@
     font-size: 20px
     line-height: 30px
     position: relative
- 
+
   &.ion:after
     font-family: "Ionicons"
 
   &.resume:after
     content: '\f127'
+
+  &.left:after
+    content: '\f150'
+
+  &.right:after
+    content: '\f152'
 
   &.menu:after
     content: '\f20d'

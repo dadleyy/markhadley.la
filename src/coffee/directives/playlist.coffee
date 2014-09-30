@@ -1,4 +1,4 @@
-mh.directive 'mhPlaylist', [() ->
+mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
 
   mhPlaylist =
     replace: true

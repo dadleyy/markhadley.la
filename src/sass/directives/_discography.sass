@@ -1,0 +1,33 @@
+.discography
+  position: relative
+
+  .controls
+    position: static
+    width: 100%
+    height: 1px
+
+    .left
+      position: absolute
+      left: 0
+      top: 50%
+      z-index: 2
+    
+    .right
+      position: absolute
+      right: 0
+      top: 50%
+      z-index: 2
+
+  .icon
+    cursor: pointer
+
+    &:after
+      color: white
+
+  .playlist-container
+    position: relative
+    opacity: 0.0
+    z-index: 1
+
+    &.active
+      opacity: 1.0
