@@ -1,4 +1,4 @@
-mh.directive 'mhDiscography', ['Viewport', (Viewport) ->
+mh.directive 'mhDiscography', ['$timeout', 'Viewport', ($timeout, Viewport) ->
 
   mDiscography =
     replace: true
@@ -16,6 +16,13 @@ mh.directive 'mhDiscography', ['Viewport', (Viewport) ->
 
         if $scope.active_index > $scope.playlists.length - 1
           $scope.active_index = 0
+
+        $scope.$broadcast 'playlist_change', $scope.active_index
+
+      init = () ->
+        $scope.$broadcast 'playlist_change', 0
+
+      $timeout init
 
 
 ]

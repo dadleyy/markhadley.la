@@ -5,4 +5,4 @@
     .right
       button.ion.icon.right(ng-click="nav(1)")
   .playlist-container(ng-repeat="playlist in playlists" ng-class="{active: $index === active_index}")
-    .playlist(mh-playlist playlist="playlist")
+    .playlist(mh-playlist playlist="playlist" index="$index")

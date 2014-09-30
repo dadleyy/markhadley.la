@@ -18,10 +18,10 @@
     "angular": "~1.2.16",
     "angular-resource": "~1.2.16",
     "angular-route": "~1.2.16",
-    "jquery": "~2.1.1",
     "soundmanager2": "*",
     "zocial": "*",
     "ionicons": "~1.5.2",
+    "d3": "~3.4.11",
     "analytics": "http://www.google-analytics.com/analytics.js"
   }
 }

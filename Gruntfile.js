@@ -16,7 +16,7 @@ module.exports = function() {
   grunt.loadNpmTasks('grunt-contrib-concat');
 
   var vendor_libs = [
-        "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/d3/d3.min.js",
         "bower_components/analytics/index.js",
         "bower_components/angular/angular.js",
         "bower_components/angular-route/angular-route.js",
