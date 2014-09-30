@@ -1,5 +1,8 @@
 mh.service 'Audio', ['$q', 'SOUNDCLOUD_KEY', ($q, SOUNDCLOUD_KEY) ->
 
+  soundManager.setup
+    debugMode: false
+
   active_track = null
   listeners =
     start: []

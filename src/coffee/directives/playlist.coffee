@@ -126,14 +126,14 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Lo
         path.attr 'd', () -> arc_gen(track, indx)
 
         if COLORS.tracks[track.id]
-          path.attr 'fill', COLORS[track.id]
+          path.attr 'fill', COLORS.tracks[track.id]
         else if COLORS.playlists[$scope.playlist.id]
           playlist_colors = COLORS.playlists[$scope.playlist.id]
           color_indx = indx % playlist_colors.length
           console.log playlist_colors[color_indx]
           path.attr 'fill', playlist_colors[indx % playlist_colors.length]
         else
-          path.attr 'fill', 'red'
+          path.attr 'fill', '#ffffff'
 
         ring = new TrackRing track, grp, path, randspeed(indx)
 
