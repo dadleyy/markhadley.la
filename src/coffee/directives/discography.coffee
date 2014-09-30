@@ -1,4 +1,4 @@
-mh.directive 'mhDiscography', ['$timeout', 'Viewport', ($timeout, Viewport) ->
+mh.directive 'mhDiscography', ['$timeout', 'Viewport', 'Audio', ($timeout, Viewport, Audio) ->
 
   mDiscography =
     replace: true
@@ -11,6 +11,7 @@ mh.directive 'mhDiscography', ['$timeout', 'Viewport', ($timeout, Viewport) ->
       $scope.nav = (inc) ->
         right_bound = $scope.playlists.length - 1
         $scope.active_index += inc
+        Audio.stop()
 
         if $scope.active_index < 0
           $scope.active_index = 0

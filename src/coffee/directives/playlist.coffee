@@ -1,4 +1,4 @@
-mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
+mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', (Viewport, Loop, Audio) ->
 
   tof = (num) ->
     parseFloat num
@@ -9,35 +9,64 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
   start_radius = 60
   SPIN_SPEED = 0.5
 
-  class Ring
+  class TrackRing
 
-    constructor: (@group, @path, @speed) ->
+    constructor: (@track, @group, @path, @speed) ->
       @position = { x: 0, y: 0 }
-      @rotation = 0
+      @rotation = (Math.random() * 1000) % 360
       @stopped = false
+      @playing = false
       @listeners =
         click: []
+        mouseout: []
+        mouseover: []
+
+      was_click = false
+
+
+      trigger = (evt) =>
+        fn() for fn in @listeners[evt]
 
       over = () =>
         @stopped = true
+        @scale = 1.2
+        trigger 'mouseover'
       
       out = () =>
         @stopped = false
+        @scale = 1.0
+        trigger 'mouseout'
   
       click = () =>
-        fn() for fn in @listeners['click']
+        was_click = true
+        @playing = !@playing
+
+        if @playing
+          Audio.play @track
+        else
+          Audio.stop()
+
+        trigger 'click'
+        was_click = false
+
+      stopped = () =>
+        unless was_click
+          @playing = false
 
       @group
         .on 'mouseover', over
         .on 'mouseout', out
         .on 'click', click
 
+      Audio
+        .on 'stop', stopped
+
     move: (x_pos, y_pos) ->
       @position.x = x_pos
       @position.y = y_pos
 
     rotate: (degrees) ->
-      unless @stopped
+      unless @stopped or @playing
         @rotation += degrees * @speed
 
     update: () ->
@@ -48,6 +77,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
     on: (evt, fn) ->
       if @listeners[evt] && angular.isFunction(fn)
         @listeners[evt].push fn
+      @
 
   randspeed = (indx) ->
     large = (Math.random() * 100) % 2
@@ -63,7 +93,8 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
       playlist: '='
       index: '='
     link: ($scope, $element, $attrs) ->
-      d_el = d3.select $element[0]
+      $scope.active = null
+      d_el = d3.select($element[0]).select '.playlist-guts'
       svg = d_el.append 'svg'
       total_duration = 0
       rings = []
@@ -71,12 +102,15 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
       loop_id = null
       width = 100
       height = 100
+      hover_indx = null
 
       arcInner = (data, indx) ->
-        start_radius + (indx * arc_inc)
+        inner_radius = start_radius + (indx * arc_inc)
+        inner_radius += if indx == hover_indx then -5 else 0
 
       arcOuter = (data, indx) ->
-        arcInner(null, indx) + arc_width
+        outer_radius = arcInner(null, indx) + arc_width
+        outer_radius += if indx == hover_indx then 10 else 0
 
       arcEnd = (data, indx) ->
         percent = tof(data.duration) / total_duration
@@ -92,12 +126,20 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
         path.attr 'd', () -> arc_gen(track, indx)
         path.attr 'fill', 'red'
 
-        ring = new Ring grp, path, randspeed(indx)
+        ring = new TrackRing track, grp, path, randspeed(indx)
 
-        click = () ->
-          console.log track
+        over = () ->
+          hover_indx = indx
+          path.attr 'd', () -> arc_gen(track, indx)
 
-        ring.on 'click', click
+        out = () ->
+          hover_indx = null
+          path.attr 'd', () -> arc_gen(track, indx)
+
+        ring
+          .on 'mouseover', over
+          .on 'mouseout', out
+
         rings.push ring
 
       position = (ring, indx) ->
@@ -106,7 +148,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
         ring.update()
 
       resize = () ->
-        total_duration += tof(track.duration) for track in $scope.playlist.tracks
         width = $element[0].offsetWidth
         height = $element[0].offsetHeight
 
@@ -139,6 +180,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', (Viewport, Loop) ->
         else
           stopSpin()
 
+      total_duration += tof(track.duration) for track in $scope.playlist.tracks
       Viewport.addListener resize
       addTrack track, index for track, index in $scope.playlist.tracks
       resize()

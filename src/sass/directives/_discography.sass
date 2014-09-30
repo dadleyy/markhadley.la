@@ -8,19 +8,19 @@
     top: 50%
     left: 0
 
-    .left, .right
+    div.left, div.right
       top: 50%
-      opacity: 0.1
+      display: none
 
       &.actionable
-        opacity: 1.0
+        display: block
 
-    .left
+    div.left
       position: absolute
       left: 0
       z-index: 3
     
-    .right
+    div.right
       position: absolute
       right: 0
       z-index: 3
@@ -28,7 +28,7 @@
   .icon
     +transition(opacity 200ms ease)
     cursor: pointer
-    opacity: 0.5
+    opacity: 0.7
 
     &:hover
       opacity: 1.0
@@ -37,16 +37,30 @@
       color: white
 
   .playlist-container
-    +transition(opacity 400ms ease, transform 600ms ease)
-    +transform(translateX(250px))
+    +transition(opacity 200ms ease, transform 600ms ease)
+    +transform(translateX(350px))
     position: relative
     opacity: 0.0
     z-index: 1
 
+    .playlist
+      display: block
+
+      .title-container
+        +transition(opacity 1000ms ease, transform 500ms ease)
+        +transform(translateX(-1000px))
+        opacity: 0.0
+
     &.prev
-      +transform(translateX(-250px))
+      +transform(translateX(-350px))
 
     &.active
       opacity: 1.0
       z-index: 2
       +transform(translateX(0px))
+
+      .playlist
+
+        .title-container
+          +transform(translateX(0px))
+          opacity: 1.0
