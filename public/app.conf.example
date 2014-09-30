@@ -1,0 +1,12 @@
+{
+  "google": {
+    "tracking": ""
+  },
+  "urls": {
+    "blog": ""
+  },
+  "soundcloud": {
+    "client_id": "",
+    "user_id": ""
+  }
+}
