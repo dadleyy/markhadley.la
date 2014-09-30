@@ -15,9 +15,9 @@ script:
 after_success:
 - tar -cvzf "mhadley-$TRAVIS_COMMIT.tar.gz" ./public/
 - curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS
-  "ftp://ftp.sizethreestudios.com/mhadley/$TRAVIS_COMMIT.tar.gz"
+  "ftp://ftp.sizethreestudios.com/artifacts/mhadley/$TRAVIS_COMMIT.tar.gz"
 - curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS
-  "ftp://ftp.sizethreestudios.com/mhadley/latest.tar.gz"
+  "ftp://ftp.sizethreestudios.com/artifacts/mhadley/latest.tar.gz"
 env:
   global:
   - secure: BwWon+qxmuP9gY0e/ypd7i5cYbSO3xOXZrIek1Wx9hcLz3U56/rmubhZA0DmuGOgncAkkGOSCIni57XPHhrHMfwJh1k33wQUBav24kTMlFscKBKMndgjIQSNtgYBMwelcr+qJ+pjZymXaDspBVd2yoZDGdoQiPtXvW5mBIp5XjY=
