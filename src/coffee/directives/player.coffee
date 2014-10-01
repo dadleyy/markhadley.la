@@ -6,5 +6,4 @@ mh.directive 'mhPlayer', ['Audio', (Audio) ->
     scope: {}
     link: ($scope, $element, $attrs) ->
 
-
 ]

@@ -1,83 +1,9 @@
-mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Loop, Audio, COLORS) ->
+mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (Viewport, Loop, Audio, Drawing, COLORS) ->
 
   tof = (num) ->
     parseFloat num
 
-  arc_width = 15
-  arc_spacing = 2
-  arc_inc = arc_width + arc_spacing
-  start_radius = 60
   SPIN_SPEED = 0.5
-
-  class TrackRing
-
-    constructor: (@track, @group, @path, @speed) ->
-      @position = { x: 0, y: 0 }
-      @rotation = (Math.random() * 1000) % 360
-      @stopped = false
-      @playing = false
-      @listeners =
-        click: []
-        mouseout: []
-        mouseover: []
-
-      was_click = false
-
-
-      trigger = (evt) =>
-        fn() for fn in @listeners[evt]
-
-      over = () =>
-        @stopped = true
-        @scale = 1.2
-        trigger 'mouseover'
-      
-      out = () =>
-        @stopped = false
-        @scale = 1.0
-        trigger 'mouseout'
-  
-      click = () =>
-        was_click = true
-        @playing = !@playing
-
-        if @playing
-          Audio.play @track
-        else
-          Audio.stop()
-
-        trigger 'click'
-        was_click = false
-
-      stopped = () =>
-        unless was_click
-          @playing = false
-
-      @group
-        .on 'mouseover', over
-        .on 'mouseout', out
-        .on 'click', click
-
-      Audio
-        .on 'stop', stopped
-
-    move: (x_pos, y_pos) ->
-      @position.x = x_pos
-      @position.y = y_pos
-
-    rotate: (degrees) ->
-      unless @stopped or @playing
-        @rotation += degrees * @speed
-
-    update: () ->
-      translate = ['translate(', @position.x, ',', @position.y, ')'].join ''
-      rotate = ['rotate(', @rotation, ')'].join ''
-      @group.attr 'transform', [translate, rotate].join(' ')
-
-    on: (evt, fn) ->
-      if @listeners[evt] && angular.isFunction(fn)
-        @listeners[evt].push fn
-      @
 
   randspeed = (indx) ->
     large = (Math.random() * 100) % 2
@@ -96,7 +22,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Lo
       $scope.active = null
       d_el = d3.select($element[0]).select '.playlist-guts'
       svg = d_el.append 'svg'
-      total_duration = 0
       rings = []
       arc_gen = null
       loop_id = null
@@ -104,50 +29,51 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Lo
       height = 100
       hover_indx = null
 
-      arcInner = (data, indx) ->
-        inner_radius = start_radius + (indx * arc_inc)
-        inner_radius += if indx == hover_indx then -5 else 0
-
-      arcOuter = (data, indx) ->
-        outer_radius = arcInner(null, indx) + arc_width
-        outer_radius += if indx == hover_indx then 10 else 0
-
-      arcEnd = (data, indx) ->
-        percent = tof(data.duration) / total_duration
-        radians = (360 * percent) * (Math.PI / 180)
-
-      arcStart = (data, indx) -> 0
-
       addTrack = (track, indx) ->
         grp = svg.append 'g'
         path = grp.append 'path'
 
         grp.attr 'data-track', track.title
-        path.attr 'd', () -> arc_gen(track, indx)
 
         if COLORS.tracks[track.id]
           path.attr 'fill', COLORS.tracks[track.id]
         else if COLORS.playlists[$scope.playlist.id]
           playlist_colors = COLORS.playlists[$scope.playlist.id]
           color_indx = indx % playlist_colors.length
-          console.log playlist_colors[color_indx]
           path.attr 'fill', playlist_colors[indx % playlist_colors.length]
         else
           path.attr 'fill', '#ffffff'
 
-        ring = new TrackRing track, grp, path, randspeed(indx)
+        ring = new Drawing.Ring grp, path, randspeed(indx)
+
+        fat_gen = () ->
+          arc_gen.fat track
+
+        std_gen = () ->
+          arc_gen.standard track
+
+        play_gen = () ->
+          arc_gen.playing track, 1400
 
         over = () ->
-          hover_indx = indx
-          path.attr 'd', () -> arc_gen(track, indx)
+          unless ring.playing
+            ring.setGen fat_gen
 
         out = () ->
-          hover_indx = null
-          path.attr 'd', () -> arc_gen(track, indx)
+          unless ring.playing
+            ring.setGen std_gen
+
+        clicked = () ->
+          if ring.playing
+            ring.setGen play_gen
+          else
+            ring.setGen fat_gen
 
         ring
           .on 'mouseover', over
           .on 'mouseout', out
+          .on 'click', clicked
+          .setGen std_gen
 
         rings.push ring
 
@@ -166,12 +92,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Lo
 
         position ring, rindx for ring, rindx in rings
 
-      arc_gen = d3.svg.arc()
-        .startAngle arcStart
-        .endAngle arcEnd
-        .innerRadius arcInner
-        .outerRadius arcOuter
-
       spin = () ->
         position ring, rindx for ring, rindx in rings
 
@@ -189,7 +109,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'COLORS', (Viewport, Lo
         else
           stopSpin()
 
-      total_duration += tof(track.duration) for track in $scope.playlist.tracks
+      arc_gen = Drawing.arcFactory $scope.playlist
       Viewport.addListener resize
       addTrack track, index for track, index in $scope.playlist.tracks
       resize()

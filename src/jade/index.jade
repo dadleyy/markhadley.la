@@ -15,7 +15,9 @@ html
     header(mh-header)
     .page
       div(ng-view)
+
     if debug
-      script(type='text/javascript', src='/js/app.js')
+      script(type='text/javascript', src='/js/vendor.js')
+      script(type='text/javascript', src='/js/dist.js')
     else
       script(type='text/javascript', src='/js/app.min.js')

@@ -18,10 +18,10 @@ module.exports = function() {
   var vendor_libs = [
         "bower_components/d3/d3.min.js",
         "bower_components/analytics/index.js",
-        "bower_components/angular/angular.js",
-        "bower_components/angular-route/angular-route.js",
-        "bower_components/angular-resource/angular-resource.js",
-        "bower_components/soundmanager2/script/soundmanager2.js"
+        "bower_components/angular/angular.min.js",
+        "bower_components/angular-route/angular-route.min.js",
+        "bower_components/angular-resource/angular-resource.min.js",
+        "bower_components/soundmanager2/script/soundmanager2-jsmin.js"
       ],
       package_info = grunt.file.readJSON('package.json'),
       package_banner = [
@@ -108,13 +108,24 @@ module.exports = function() {
         separator: '; \n'
       },
       dist: {
-        src: vendor_libs.concat([
+        src: [
           "obj/js/app.js",
           "obj/js/templates.js",
           "obj/js/soundcloud.js",
           "obj/js/google.js"
-        ]),
-        dest: 'public/js/app.js'
+        ],
+        dest: 'public/js/dist.js'
+      },
+      vendor: {
+        src: vendor_libs,
+        dest: 'public/js/vendor.js'
+      },
+      release: {
+        src: [
+          'public/js/vendor.js',
+          'public/js/dist.min.js'
+        ],
+        dest: 'public/js/app.min.js'
       }
     },
 
@@ -154,11 +165,11 @@ module.exports = function() {
       },
       scripts: {
         files: ['src/coffee/**/*.coffee'],
-        tasks: ['coffee', 'concat']
+        tasks: ['coffee', 'concat:dist']
       },
       templates: {
         files: ['src/jade/**/*.jade'],
-        tasks: ['jade:debug', 'copy:index', 'ngtemplates', 'concat']
+        tasks: ['jade:debug', 'copy:index', 'ngtemplates', 'concat:dist']
       },
       sass: {
         files: ['src/sass/**/*.sass'],
@@ -180,19 +191,20 @@ module.exports = function() {
     uglify: {
       release: {
         options: {
-          banner: package_banner
+          banner: package_banner,
+          wrap: true
         },
         files: {
-          'public/js/app.min.js': ['public/js/app.js']
+          'public/js/dist.min.js': ['public/js/dist.js']
         }
       }
     }
 
   });
   
-  grunt.registerTask('js', ['coffee', 'jade:debug', 'ngtemplates', 'concat']);
+  grunt.registerTask('js', ['coffee', 'jade:debug', 'ngtemplates', 'concat:vendor', 'concat:dist']);
   grunt.registerTask('css', ['sass']);
   grunt.registerTask('default', ['css', 'coffee', 'js', 'css', 'copy']);
-  grunt.registerTask('release', ['default', 'jade:release', 'uglify']);
+  grunt.registerTask('release', ['default', 'jade:release', 'uglify', 'concat:release']);
 
 };
