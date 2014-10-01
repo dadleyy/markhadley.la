@@ -12,10 +12,10 @@ html
     link(rel='stylesheet', href='/css/app.css', type='text/css')
     // created by Danny Hadley (@dadleyy)
   body
-    header(mh-header)
+    .header(mh-header)
     .page
       div(ng-view)
-
+    .footer(mh-footer)
     if debug
       script(type='text/javascript', src='/js/vendor.js')
       script(type='text/javascript', src='/js/dist.js')
