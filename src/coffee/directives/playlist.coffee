@@ -28,6 +28,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
       loop_id = null
       width = 100
       height = 100
+      was_clicked = false
 
       addTrack = (track, indx) ->
         grp = svg.append 'g'
@@ -44,48 +45,38 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
         else
           path.attr 'fill', '#ffffff'
 
-        ring = new Drawing.Ring grp, path, randspeed(indx)
         instance = new Audio.Track track
 
-        fat_gen = () ->
-          arc_gen.fat track
+        arc_fn = () ->
+          arc_gen.fn instance, indx
 
-        std_gen = () ->
-          arc_gen.standard track
-
-        play_gen = () ->
-          arc_gen.playing track, instance.position()
-
-        over = () ->
-          unless instance.playing
-            ring.setGen fat_gen
-
-        out = () ->
-          unless instance.playing
-            ring.setGen std_gen
+        ring = new Drawing.Ring grp, path, randspeed(indx), arc_fn
 
         clicked = () ->
           if !instance.playing
+            was_clicked = true
             instance.play()
+            was_clicked = false
           else
             instance.stop()
 
         playing = () ->
-          ring.setGen play_gen
           ring.update()
 
         stopped = () ->
-          ring.setGen std_gen
+          if !was_clicked
+            $scope.active = null
+
+        started = () ->
+          $scope.active = instance
 
         ring
-          .on 'mouseover', over
-          .on 'mouseout', out
           .on 'click', clicked
-          .setGen std_gen
 
         instance
           .on 'playback', playing
           .on 'stop', stopped
+          .on 'start', started
 
         rings.push ring
         tracks.push instance
@@ -93,8 +84,10 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
       position = (ring, indx) ->
         ring.move width * 0.5, height * 0.5
 
-        if !tracks[indx].playing
+        if !tracks[indx].playing and !$scope.active
           ring.rotate SPIN_SPEED
+        else
+          ring.rotation = 0
 
         ring.update()
 
@@ -125,7 +118,8 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
         else
           stopSpin()
 
-      arc_gen = Drawing.arcFactory $scope.playlist
+      arc_gen = Drawing.arcFactory $scope
+
       Viewport.addListener resize
       addTrack track, index for track, index in $scope.playlist.tracks
       resize()

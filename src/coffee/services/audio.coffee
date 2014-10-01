@@ -2,6 +2,9 @@ mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) 
 
   active_track = null
 
+  soundManager.setup
+    debugMode: false
+
   trigger = (evt) ->
     fn() for fn in @listeners[evt]
 
@@ -9,6 +12,7 @@ mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) 
 
     constructor: (@track) ->
       client_params = ['client_id', SOUNDCLOUD_KEY].join '='
+      @id = @track.id
       @playing = false
       @playback_loop = null
       @listeners =
@@ -22,14 +26,22 @@ mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) 
     position: () ->
       @sound.position
 
+    duration: () ->
+      @track.duration
+
     play: () ->
       @playing = true
 
       update = () =>
         trigger.call @, 'playback'
 
-      @playback_loop = Loop.add update
+      if active_track and active_track.id != @id
+        active_track.stop()
+
       active_track = @
+
+      @playback_loop = Loop.add update
+      trigger.call @, 'start'
       @sound.play()
 
     stop: () ->

@@ -10,7 +10,7 @@ mh.service 'Drawing', [() ->
 
   class Ring
 
-    constructor: (@group, @path, @speed) ->
+    constructor: (@group, @path, @speed, @arc_fn) ->
       @position = { x: 0, y: 0 }
       @rotation = (Math.random() * 1000) % 360
       @stopped = false
@@ -52,7 +52,7 @@ mh.service 'Drawing', [() ->
     update: () ->
       translate = ['translate(', @position.x, ',', @position.y, ')'].join ''
       rotate = ['rotate(', @rotation, ')'].join ''
-      path = @arc_gen()
+      path = @arc_fn()
       @group.attr 'transform', [translate, rotate].join(' ')
       @path.attr 'd', path
 
@@ -61,19 +61,21 @@ mh.service 'Drawing', [() ->
         @listeners[evt].push fn
       @
 
-    setGen: (generator) ->
-      if angular.isFunction generator
-        @arc_gen = generator
-
   Drawing =
     
     Ring: Ring
 
-    arcFactory: (playlist) ->
+    arcFactory: ($scope) ->
+      playlist = $scope.playlist
       arc_gen = {}
       total_duration = 0
       total_duration += tof(track.duration) for track in playlist.tracks
       hover_indx = -1
+
+      radians = (track) ->
+        duration = track.duration
+        percent = tof(duration) / total_duration
+        rads = (360 * percent) * (Math.PI / 180)
 
       find = (target) ->
         found = -1
@@ -82,46 +84,55 @@ mh.service 'Drawing', [() ->
             found = index
         found
       
-      inner = (mod) ->
-        (track) ->
+      inner = (track) ->
+        if $scope.active
+          play_inner = if track.playing then 20 else 80
+          play_inner
+        else
           indx = find(track)
           inner_radius = start_radius + (indx * arc_inc)
-          inner_radius += mod
 
-      outer = (mod) ->
-        (track) ->
+      outer = (track) ->
+        if $scope.active
+          play_outer = if track.playing then 40 else 100
+          play_outer
+        else
           indx = find(track)
           inner_radius = start_radius + (indx * arc_inc)
           outer_radius = inner_radius + arc_width
-          outer_radius += mod
 
       end = (track, indx) ->
-        percent = tof(track.duration) / total_duration
-        radians = (360 * percent) * (Math.PI / 180)
+        end_angle = 0
+        if track.playing
+          end_angle = calc track, track.position()
+        else
+          if $scope.active
+            start_angle = start track, indx
+            angle_width = radians track.track
+            end_angle = start_angle + angle_width
+          else
+            end_angle = radians track.track
+        end_angle
 
-      start = (track, indx) -> 0
+      start = (track, indx) ->
+        start_angle = 0
+        if $scope.active and indx > 0 and !track.playing
+          prev_track = playlist.tracks[indx - 1]
+          prev_start = start prev_track, indx - 1
+          prev_width = radians prev_track
+          start_angle = prev_start + prev_width
+        start_angle
 
       calc = (track, played) ->
-        percent = tof(played) / tof(track.duration)
-        radians = (360 * percent) * (Math.PI / 180)
+        duration = track.duration()
+        percent = tof(played) / tof(duration)
+        rads = (360 * percent) * (Math.PI / 180)
 
-      arc_gen.standard = d3.svg.arc()
+      arc_gen.fn = d3.svg.arc()
         .startAngle start
         .endAngle end
-        .innerRadius inner(0)
-        .outerRadius outer(0)
-
-      arc_gen.fat = d3.svg.arc()
-        .startAngle start
-        .endAngle end
-        .innerRadius inner(-5)
-        .outerRadius outer(5)
-
-      arc_gen.playing = d3.svg.arc()
-        .startAngle start
-        .endAngle calc
-        .innerRadius () -> 40
-        .outerRadius () -> 40 + arc_width
+        .innerRadius inner
+        .outerRadius outer
 
       arc_gen
 
