@@ -4,6 +4,10 @@
   "description": "Personal website for Mark Hadley",
   "author": "Danny Hadley <danny@dadleyy.com>",
   "license": "MIT",
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/dadleyy/markhadley.la"
+  },
   "dependencies": {
     "grunt": "~0.4.4",
     "grunt-contrib-coffee": "~0.10.1",

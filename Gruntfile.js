@@ -28,7 +28,11 @@ module.exports = function() {
         '/*!', 
         '<%= pkg.name %>', 
         'v<%= pkg.version %>', 
+        'by <%= pkg.author %>', 
+        '<% if(pkg.commit) { %>',
         '[<%= pkg.commit %>]', 
+        '<% } %>',
+        '[<%= pkg.repository.url %>]', 
         '*/'
       ].join(' ')
 
@@ -121,6 +125,9 @@ module.exports = function() {
         dest: 'public/js/vendor.js'
       },
       release: {
+        options: {
+          banner: package_banner
+        },
         src: [
           'public/js/vendor.js',
           'public/js/dist.min.js'
