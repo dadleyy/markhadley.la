@@ -1,44 +1,55 @@
-mh.service 'Audio', ['$q', 'SOUNDCLOUD_KEY', ($q, SOUNDCLOUD_KEY) ->
-
-  soundManager.setup
-    debugMode: false
+mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) ->
 
   active_track = null
-  listeners =
-    start: []
-    stop: []
-    finish: []
 
   trigger = (evt) ->
-    if listeners[evt]
-      fn() for fn in listeners[evt]
+    fn() for fn in @listeners[evt]
 
-  Audio =
+  class Track
+
+    constructor: (@track) ->
+      client_params = ['client_id', SOUNDCLOUD_KEY].join '='
+      @playing = false
+      @playback_loop = null
+      @listeners =
+        start: []
+        stop: []
+        playback: []
+
+      @sound = soundManager.createSound
+        url: [@track.stream_url, client_params].join '?'
+
+    position: () ->
+      @sound.position
+
+    play: () ->
+      @playing = true
+
+      update = () =>
+        trigger.call @, 'playback'
+
+      @playback_loop = Loop.add update
+      active_track = @
+      @sound.play()
+
+    stop: () ->
+      @playing = false
+      Loop.remove @playback_loop
+      trigger.call @, 'stop'
+      @sound.stop()
 
     on: (evt, fn) ->
-      if listeners[evt] and angular.isFunction(fn)
-        listeners[evt].push fn
-      Audio
+      if @listeners[evt] and angular.isFunction(fn)
+        @listeners[evt].push fn
+      @
 
-    play: (track) ->
-      stop() if active_track
-
-      streaming_url = track.stream_url
-      client_params = ['client_id', SOUNDCLOUD_KEY].join '='
-
-      active_track = soundManager.createSound
-        url: [streaming_url, client_params].join '?'
-
-      active_track.play()
-      trigger 'start'
-      active_track
+  Audio =
 
     stop: () ->
       if active_track
         active_track.stop()
-        trigger 'stop'
 
-      active_track = null
+  Audio.Track = Track
 
   Audio
 

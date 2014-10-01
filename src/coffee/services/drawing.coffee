@@ -14,14 +14,11 @@ mh.service 'Drawing', [() ->
       @position = { x: 0, y: 0 }
       @rotation = (Math.random() * 1000) % 360
       @stopped = false
-      @playing = false
       @arc_gen = d3.svg.arc()
       @listeners =
         click: []
         mouseout: []
         mouseover: []
-
-      was_click = false
 
       trigger = (evt) =>
         fn() for fn in @listeners[evt]
@@ -37,14 +34,7 @@ mh.service 'Drawing', [() ->
         trigger 'mouseout'
   
       click = () =>
-        was_click = true
-        @playing = !@playing
         trigger 'click'
-        was_click = false
-
-      stopped = () =>
-        unless was_click
-          @playing = false
 
       @group
         .on 'mouseover', over
@@ -56,7 +46,7 @@ mh.service 'Drawing', [() ->
       @position.y = y_pos
 
     rotate: (degrees) ->
-      unless @stopped or @playing
+      unless @stopped
         @rotation += degrees * @speed
 
     update: () ->
@@ -130,8 +120,8 @@ mh.service 'Drawing', [() ->
       arc_gen.playing = d3.svg.arc()
         .startAngle start
         .endAngle calc
-        .innerRadius () -> 180
-        .outerRadius () -> 180 + arc_width
+        .innerRadius () -> 40
+        .outerRadius () -> 40 + arc_width
 
       arc_gen
 

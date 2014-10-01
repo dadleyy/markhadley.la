@@ -23,11 +23,11 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
       d_el = d3.select($element[0]).select '.playlist-guts'
       svg = d_el.append 'svg'
       rings = []
+      tracks = []
       arc_gen = null
       loop_id = null
       width = 100
       height = 100
-      hover_indx = null
 
       addTrack = (track, indx) ->
         grp = svg.append 'g'
@@ -45,6 +45,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
           path.attr 'fill', '#ffffff'
 
         ring = new Drawing.Ring grp, path, randspeed(indx)
+        instance = new Audio.Track track
 
         fat_gen = () ->
           arc_gen.fat track
@@ -53,21 +54,28 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
           arc_gen.standard track
 
         play_gen = () ->
-          arc_gen.playing track, 1400
+          arc_gen.playing track, instance.position()
 
         over = () ->
-          unless ring.playing
+          unless instance.playing
             ring.setGen fat_gen
 
         out = () ->
-          unless ring.playing
+          unless instance.playing
             ring.setGen std_gen
 
         clicked = () ->
-          if ring.playing
-            ring.setGen play_gen
+          if !instance.playing
+            instance.play()
           else
-            ring.setGen fat_gen
+            instance.stop()
+
+        playing = () ->
+          ring.setGen play_gen
+          ring.update()
+
+        stopped = () ->
+          ring.setGen std_gen
 
         ring
           .on 'mouseover', over
@@ -75,11 +83,19 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
           .on 'click', clicked
           .setGen std_gen
 
+        instance
+          .on 'playback', playing
+          .on 'stop', stopped
+
         rings.push ring
+        tracks.push instance
 
       position = (ring, indx) ->
         ring.move width * 0.5, height * 0.5
-        ring.rotate SPIN_SPEED
+
+        if !tracks[indx].playing
+          ring.rotate SPIN_SPEED
+
         ring.update()
 
       resize = () ->
