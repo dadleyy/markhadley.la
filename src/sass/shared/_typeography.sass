@@ -16,3 +16,12 @@ h1
 
 .bold
   font-weight: 700
+
+a, a:visited
+  +transition(color 400ms ease)
+  color: darken(desaturate($link-color, 50), 10)
+  text-decoration: none
+
+  &:hover, &.active
+    color: lighten($link-color, 10)
+    text-shadow: 1px 1px rgba(0,0,0,0.5)

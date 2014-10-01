@@ -5,6 +5,7 @@ mh.config ['$routeProvider', ($routeProvider) ->
   $routeProvider.when '/discography',
     templateUrl: 'views.discography'
     controller: 'DiscographyController'
+    name: 'discography'
     resolve:
       playlists: ['$q', '$http', 'SOUNDCLOUD_KEY', 'SOUNDCLOUD_USER', ($q, $http, SOUNDCLOUD_KEY, SOUNDCLOUD_USER) ->
         defferred = $q.defer()
