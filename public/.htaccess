@@ -6,6 +6,7 @@ DirectoryIndex index.html
   RewriteEngine On
   RewriteBase /
   RewriteRule ^api\/blog\/(.*)$ http://wp.markhadley.la/api/$1 [P,L]
+  RewriteRule ^api\/waveform(.*)$ http://www.waveformjs.org/w$1 [P,L]
   RewriteRule ^api\/images\/(.*)$ http://$1 [P,L]
 
   RewriteCond %{REQUEST_FILENAME} !-f

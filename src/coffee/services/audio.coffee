@@ -29,6 +29,12 @@ mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) 
     duration: () ->
       @track.duration
 
+    title: () ->
+      @track.title
+
+    waveform: () ->
+      @track.waveform_url
+
     play: () ->
       @playing = true
 
