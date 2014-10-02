@@ -34,7 +34,6 @@ mh.service 'Waveform', [() ->
     redraw: () =>
       @clear()
       @context.fillStyle = @innerColor
-      console.log @data
       middle = @height / 2
       i = 0
       for d in @data
