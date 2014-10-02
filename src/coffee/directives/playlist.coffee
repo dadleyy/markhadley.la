@@ -67,11 +67,17 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
           if !was_clicked
             $scope.active = null
             r.rotation = (Math.random() * 1000) % 360 for r in rings
-            $scope.$digest()
+            try
+              $scope.$digest()
+            catch
+              console.log ''
 
         started = () ->
           $scope.active = instance
-          $scope.$digest()
+          try
+            $scope.$digest()
+          catch
+            console.log ''
           $scope.$broadcast 'playback_start', instance
 
         ring
