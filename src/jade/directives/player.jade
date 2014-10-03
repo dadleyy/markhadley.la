@@ -3,4 +3,9 @@
     .track-title
       h2.title {{track.title()}}
     .waveform(mh-waveform="track")
-    .controls
+    .player-controls
+      .actions
+        button.ion.icon.back(ng-click="back()")
+        button.ion.icon.stop(ng-click="stop()" ng-if="playing()")
+        button.ion.icon.play(ng-click="play()" ng-if="!playing()")
+        button.ion.icon.next(ng-click="next()")

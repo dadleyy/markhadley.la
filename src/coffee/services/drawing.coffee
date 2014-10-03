@@ -14,7 +14,6 @@ mh.service 'Drawing', [() ->
       @position = { x: 0, y: 0 }
       @rotation = (Math.random() * 1000) % 360
       @stopped = false
-      @arc_gen = d3.svg.arc()
       @listeners =
         click: []
         mouseout: []
