@@ -1,4 +1,4 @@
-mh.directive 'mhPageTitle', ['$rootScope', 'Analaytics', ($rootScope, Analaytics) ->
+mh.directive 'mhPageTitle', ['$rootScope', 'Analytics', ($rootScope, Analytics) ->
 
   default_title = 'musician'
 
@@ -7,17 +7,20 @@ mh.directive 'mhPageTitle', ['$rootScope', 'Analaytics', ($rootScope, Analaytics
     link: ($scope, $element, $attrs) ->
       update = (evt, route_event) ->
         route = route_event.$$route
-        title = ['mark hadley', route.title || default_title].join ' | '
+        route_title = if route and route.title then route.title else default_title
+        title = ['mark hadley', route_title].join ' | '
         $element.html title
-        Analaytics.track route.originalPath, route.title
+        Analytics.track route.originalPath, route.title
 
       start = (evt, route_event) ->
         route = route_event.$$route
-        Analaytics.event 'routing', 'route_start', route.originalPath
+        if route
+          Analytics.event 'routing', 'route_start', route.originalPath
 
       error = (evt, route_event) ->
         route = route_event.$$route
-        Analaytics.event 'routing', 'route_error', route.originalPath
+        if route
+          Analytics.event 'routing', 'route_error', route.originalPath
 
       $rootScope.$on '$routeChangeStart', start
       $rootScope.$on '#routeChangeError', error

@@ -1,9 +1,9 @@
-mh.service 'Analaytics', ['GOOGLE', (GOOGLE) ->
+mh.service 'Analytics', ['GOOGLE', (GOOGLE) ->
 
   ga 'create', GOOGLE.tracking, 'auto'
   ga 'send', 'pageview'
 
-  Analaytics =
+  Analytics =
 
     track: (path, title) ->
       ga 'send', 'pageview',
@@ -15,6 +15,6 @@ mh.service 'Analaytics', ['GOOGLE', (GOOGLE) ->
     event: (category, action, data) ->
       ga 'send', 'event', category, action, data
 
-  Analaytics
+  Analytics
 
 ]

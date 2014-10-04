@@ -1,4 +1,4 @@
-mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) ->
+mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics, Loop, SOUNDCLOUD_KEY) ->
 
   active_track = null
 
@@ -56,6 +56,7 @@ mh.service 'Audio', ['$q', 'Loop', 'SOUNDCLOUD_KEY', ($q, Loop, SOUNDCLOUD_KEY) 
 
       @playback_loop = Loop.add update
       trigger.call @, 'start'
+      Analytics.event 'audio', 'playback:start', @track.title
       @sound.play()
 
     stop: () ->

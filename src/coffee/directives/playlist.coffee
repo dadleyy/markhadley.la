@@ -6,10 +6,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
   SPIN_SPEED = 0.5
 
   randspeed = (indx) ->
-    large = (Math.random() * 100) % 2
-    large - 1
-    if large < 0.5 and large > -0.5
-      large *= 2
+    large = ((Math.random() * 100) % 0.5) + 0.1
     if indx % 2 == 0 then large else -large
 
   nav = (dir) ->

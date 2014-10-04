@@ -9,7 +9,9 @@ mh.directive 'mhFooter', ['$rootScope', ($rootScope) ->
 
       update = (evt, route_info) ->
         route = route_info.$$route
-        $scope.active = route.name
+
+        if route
+          $scope.active = route.name
 
       $rootScope.$on '$routeChangeStart', update
 
