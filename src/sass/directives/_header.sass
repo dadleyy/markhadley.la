@@ -11,7 +11,12 @@
     text-transform: uppercase
 
     .name
+      +transition(color 400ms ease)
       font-size: 32px
       line-height: 50px
       color: darken(white, 25)
+      cursor: pointer
+      
+      &:hover
+        color: darken(white, 10)
 
