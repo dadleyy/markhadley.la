@@ -7,8 +7,6 @@ mh.directive 'mhBio', ['$sce', ($sce) ->
       content: '='
       info: '='
     link: ($scope, $element, $attrs) ->
-      console.log $scope.content
-
       $scope.safe = () ->
         $sce.trustAsHtml $scope.content
 
