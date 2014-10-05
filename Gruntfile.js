@@ -27,17 +27,19 @@ module.exports = function() {
       package_banner = [
         '/*!', 
         '<%= pkg.name %>', 
-        'v<%= pkg.version %>', 
+        [
+          'v<%= pkg.version %>',
+          '<% if(pkg.commit) { %>',
+          '-<%= pkg.commit %>', 
+          '<% } %>',
+        ].join(''),
         'by <%= pkg.author %>', 
-        '<% if(pkg.commit) { %>',
-        '[<%= pkg.commit %>]', 
-        '<% } %>',
         '[<%= pkg.repository.url %>]', 
         '*/'
       ].join(' ')
 
   if(process.env['TRAVIS_COMMIT'])
-    package_info.commit = process.env['TRAVIS_COMMIT'];
+    package_info.commit = process.env['TRAVIS_COMMIT'].substr(0, 8);
 
   grunt.initConfig({
 
