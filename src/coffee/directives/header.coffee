@@ -33,6 +33,7 @@ mh.directive 'mhHeader', ['Loop', (Loop) ->
       update = () ->
         top = getTop()
         max_top = getMaxTop()
+        direction *= 1.05
         next = top + direction
         scrollTo 0, next
         if next > max_top
@@ -40,7 +41,6 @@ mh.directive 'mhHeader', ['Loop', (Loop) ->
         else if next < 0
           Loop.remove loop_id
 
-        
       $scope.scroll = () ->
         above_half = getTop() < (getMaxTop() * 0.5)
         direction = if above_half then SPEED else -SPEED
