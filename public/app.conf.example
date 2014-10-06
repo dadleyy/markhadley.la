@@ -2,6 +2,7 @@
   "google": {
     "tracking": ""
   },
+  background: "http://markhadleymusic.com/imgs/Background.jpg",
   "urls": {
     "blog": ""
   },
