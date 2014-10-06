@@ -7,6 +7,9 @@ mh.directive 'mhPlayer', ['Audio', (Audio) ->
     scope:
       track: '='
     link: ($scope, $element, $attrs, playlist_controller) ->
+      $scope.close = () ->
+        playlist_controller.close()
+
       $scope.stop = () ->
         $scope.track.pause()
 

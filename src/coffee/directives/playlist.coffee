@@ -59,6 +59,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
         height: @height
       @draw()
 
+    close: () ->
+      if @scope.active
+        @scope.active.stop()
+      @scope.active = null
+      r.rotation = (Math.random() * 1000) % 360 for r in @rings
+      try
+        @scope.$digest()
+      catch
+        return false
+
     addTrack: (track) ->
       indx = @tracks.length
       was_clicked = false
