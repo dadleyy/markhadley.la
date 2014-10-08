@@ -10,7 +10,7 @@ mh.service 'Drawing', [() ->
 
   class Ring
 
-    constructor: (@group, @path, @speed, @arc_fn) ->
+    constructor: (@group, @path, @arc_fn) ->
       @position = { x: 0, y: 0 }
       @rotation = (Math.random() * 1000) % 360
       @stopped = false
@@ -43,16 +43,16 @@ mh.service 'Drawing', [() ->
     move: (x_pos, y_pos) ->
       @position.x = x_pos
       @position.y = y_pos
+      translate = ['translate(', @position.x, ',', @position.y, ')'].join ''
+      @group.attr 'transform', [translate].join(' ')
 
     rotate: (degrees) ->
-      unless @stopped
-        @rotation += degrees * @speed
+      @rotation = degrees
 
     update: () ->
-      translate = ['translate(', @position.x, ',', @position.y, ')'].join ''
       rotate = ['rotate(', @rotation, ')'].join ''
       path = @arc_fn()
-      @group.attr 'transform', [translate, rotate].join(' ')
+      @path.attr 'transform': rotate
       @path.attr 'd', path
 
     on: (evt, fn) ->
@@ -93,7 +93,7 @@ mh.service 'Drawing', [() ->
 
       outer = (track) ->
         if $scope.active
-          play_outer = if track.playing then 40 else 100
+          play_outer = if track.playing then 35 else 95
           play_outer
         else
           indx = find(track)

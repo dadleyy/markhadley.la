@@ -6,7 +6,12 @@ mh = do () ->
     mh.value 'URLS', data.urls
     mh.value 'GOOGLE', data.google
     mh.value 'BACKGROUND', data.background
-    mh.value 'COLORS', if data.colors then data.colors else {}
+    if data.colors
+      mh.value 'COLORS', data.colors
+    else
+      mh.value 'COLORS',
+        tracks: {}
+        playlists: {}
 
     if data.soundcloud and data.soundcloud.client_id
       client_id = atob data.soundcloud.client_id

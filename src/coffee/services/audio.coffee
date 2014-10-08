@@ -19,6 +19,7 @@ mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics
         start: []
         stop: []
         playback: []
+        pause: []
 
       @sound = soundManager.createSound
         url: [@track.stream_url, client_params].join '?'
@@ -41,6 +42,7 @@ mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics
     pause: () ->
       @playing = false
       active_track = null
+      trigger.call @, 'pause'
       @sound.stop()
 
     play: () ->
