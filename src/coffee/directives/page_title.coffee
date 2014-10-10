@@ -1,6 +1,6 @@
 mh.directive 'mhPageTitle', ['$rootScope', 'Analytics', ($rootScope, Analytics) ->
 
-  default_title = 'musician'
+  default_title = 'Composer'
 
   mhPageTitle =
     scope: {}
@@ -8,7 +8,7 @@ mh.directive 'mhPageTitle', ['$rootScope', 'Analytics', ($rootScope, Analytics) 
       update = (evt, route_event) ->
         route = route_event.$$route
         route_title = if route and route.title then route.title else default_title
-        title = ['mark hadley', route_title].join ' | '
+        title = ['Mark Hadley', route_title].join ' | '
         $element.html title
         Analytics.track route.originalPath, route.title
 
