@@ -32,7 +32,7 @@ mh.config ['$routeProvider', ($routeProvider) ->
 
         content_request.then receive
 
-        defferred.promise
+        defferred
       ]
       bio_info: ['$q', '$http', 'URLS', ($q, $http, URLS) ->
         defferred = $q.defer()
@@ -44,7 +44,7 @@ mh.config ['$routeProvider', ($routeProvider) ->
 
         info_request.then receive
 
-        defferred.promise
+        defferred
       ]
 
 ]
