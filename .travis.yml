@@ -20,5 +20,5 @@ after_success:
   "ftp://ftp.sizethreestudios.com/artifacts/mhadley/latest.tar.gz"
 env:
   global:
-  - secure: UELNKghDfAIk7+kljkR6GiySfPiyQvv1UQrdZEM6IM0ukfCDAdfR/b8Nl2UxCuAEtNkOpmk6ZBWB/CvEklXX55XVNe2ibJaciQmVWwVgxitzwzD08mEAUHicMSYUe/253DyqiXxm+5Qwc6dFDNW0gCbgFXlXBkbWUEE19+LikoA=
-  - secure: GAkuMi5WygtiVks70/FyX5HT3WMFmxnCCQh471mM/YWQkYX2a5vD5yucwDnrV27OM1ViRhKQzYiZBZSF15E5vETVmpcN+3zu0IsF4h7fkW8wge6Fh2m73Nv5fWbDgl/HwayRs8OUMVOVfNSZqSVt+GCoI0knSIAmF1piEMdhyJk=
+  - secure: lT4F6tyQD6LUfWS6kXipPOG96onPe+cGiP1GmE1du/I6voeHOKFt3WQeuIcXfBXBNSuSQHrC05rjYuwUWaNCyQbYFV9rveYkVuwP/DEOFHA+ZVp7NwvypjUcRbFNQl7Q79dTs5QG0kz7ve9CJHEkjOUyD9x3JvMUHAnEzXT+EdQ=
+  - secure: Kjs+pDD2tOSvQOm6w5ltQ0p6SUwlqTSgJIR+xRhfuGeIX1X+flfStvOE4psYM8Opm2sG14YnlREZiCXVawDHyyQULjymVNlIB2S2Tw7Et0drqhfXKXH4kkv+slP9ZjPBJY/leT/b4oG8qjzWSeipOmyR7iqTwh655CLisFFB1j4=
