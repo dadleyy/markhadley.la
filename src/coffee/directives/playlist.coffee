@@ -1,7 +1,9 @@
-mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (Viewport, Loop, Audio, Drawing, COLORS) ->
+mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, Loop, Audio, Drawing) ->
 
   tof = (num) ->
     parseFloat num
+
+  toi = (num) -> parseInt num
 
   SPIN_SPEED = 0.2
 
@@ -9,15 +11,20 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
     large = ((Math.random() * 100) % 0.5) + 0.1
     if indx % 2 == 0 then large else -large
 
-  getColor = (track, indx, playlist) ->
-    found_color = '#fff'
-    if COLORS.tracks and COLORS.tracks[track.id]
-      found_color = COLORS.tracks[track.id]
-    else if COLORS.playlists and COLORS.playlists[playlist.id]
-      playlist_colors = COLORS.playlists[playlist.id]
-      color_indx = indx % playlist_colors.length
-      found_color = playlist_colors[indx % playlist_colors.length]
-    found_color
+  getColor = (track, indx) ->
+    colors = @scope.colors
+    playlist_id = @playlist.id
+
+    for color_list in colors
+      list_id = toi color_list.id
+      if list_id == track.id
+        fount_color = color_list.color
+      else if list_id == playlist_id
+        color_options = color_list.color.split ','
+        found_color = color_options[indx % color_options.length]
+
+    cleansed = (found_color or '#fff').replace /\s/g, ''
+    ['#', cleansed].join ''
 
   nav = (dir) ->
     next = @active_index + dir
@@ -107,7 +114,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
       was_clicked = false
       group = @svg.append 'g'
       path = group.append 'path'
-      fill_color = getColor track, indx, @playlist
+      fill_color = getColor.call @, track, indx
       path.attr 'fill', fill_color
       group.attr 'data-track', track.title
 
@@ -164,6 +171,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', 'COLORS', (V
     scope:
       playlist: '='
       index: '='
+      colors: '='
     link: ($scope, $element, $attrs, playlist_controller) ->
       $scope.active = null
       loop_id = null

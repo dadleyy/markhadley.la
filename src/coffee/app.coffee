@@ -3,15 +3,10 @@ mh = do () ->
 
   loaded_config = (response) ->
     data = response.data
+    mh.value 'CONFIG', data
     mh.value 'URLS', data.urls
     mh.value 'GOOGLE', data.google
     mh.value 'BACKGROUND', data.background
-    if data.colors
-      mh.value 'COLORS', data.colors
-    else
-      mh.value 'COLORS',
-        tracks: {}
-        playlists: {}
 
     if data.soundcloud and data.soundcloud.client_id
       client_id = atob data.soundcloud.client_id

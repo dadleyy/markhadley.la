@@ -5,7 +5,8 @@ DirectoryIndex index.html
   # Turn mod_rewrite on
   RewriteEngine On
   RewriteBase /
-  RewriteRule ^api\/blog\/(.*)$ http://wp.markhadley.la/api/$1 [P,L]
+  RewriteRule ^api\/content\/(.*)$ http://wp.markhadley.la/wp-content/$1 [P,L]
+  RewriteRule ^api\/blog\/(.*)$ http://wp.markhadley.la/wp-json/$1 [P,L]
   RewriteRule ^api\/waveform(.*)$ http://www.waveformjs.org/w$1 [P,L]
   RewriteRule ^api\/images\/(.*)$ http://$1 [P,L]
 

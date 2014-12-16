@@ -1,6 +1,6 @@
 do () =>
 
-  HomeController = ($scope, playlists, bio_content, bio_info) ->
+  HomeController = ($scope, playlists, about_page, colors) ->
 
     featured = []
     for pl in playlists
@@ -10,8 +10,9 @@ do () =>
         featured.push pl
 
     $scope.playlists = featured
-    $scope.bio_content = bio_content
-    $scope.bio_info = bio_info
+    $scope.about_page = about_page
+    $scope.colors = colors
   
-  HomeController.$inject = ['$scope', 'playlists', 'bio_content', 'bio_info']
+  HomeController.$inject = ['$scope', 'playlists', 'about_page', 'colors']
+
   mh.controller 'HomeController', HomeController

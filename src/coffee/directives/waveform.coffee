@@ -1,4 +1,4 @@
-mh.directive 'mhWaveform', ['$http', 'Viewport', 'Waveform', 'COLORS', ($http, Viewport, Waveform, COLORS) ->
+mh.directive 'mhWaveform', ['$http', 'Viewport', 'Waveform',  ($http, Viewport, Waveform) ->
 
   mhWaveform =
     replace: true
@@ -11,7 +11,7 @@ mh.directive 'mhWaveform', ['$http', 'Viewport', 'Waveform', 'COLORS', ($http, V
       waveform_data = null
       waveform = new Waveform
         canvas: canvas
-        innerColor: COLORS.waveform.inner
+        innerColor: '#414141'
         
       width = 0
       height = 0

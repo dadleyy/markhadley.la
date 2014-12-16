@@ -21,7 +21,8 @@ module.exports = function() {
         "bower_components/angular/angular.min.js",
         "bower_components/angular-route/angular-route.min.js",
         "bower_components/angular-resource/angular-resource.min.js",
-        "bower_components/soundmanager2/script/soundmanager2-jsmin.js"
+        "bower_components/soundmanager2/script/soundmanager2-jsmin.js",
+        "bower_components/papaparse.js/papaparse.min.js"
       ],
       package_info = grunt.file.readJSON('package.json'),
       package_banner = [

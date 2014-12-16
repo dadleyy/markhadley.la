@@ -4,6 +4,7 @@ mh.directive 'mhDiscography', ['$timeout', 'Viewport', 'Audio', ($timeout, Viewp
     replace: true
     templateUrl: 'directives.discography'
     scope:
+      colors: '='
       playlists: '='
     link: ($scope, $element, $attrs) ->
       $scope.active_index = 0

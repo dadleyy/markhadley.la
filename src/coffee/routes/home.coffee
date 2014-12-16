@@ -1,6 +1,7 @@
 mh.config ['$routeProvider', ($routeProvider) ->
 
   api_home = "https://api.soundcloud.com"
+  colors_sheet = "/api/content"
 
   $routeProvider.when '/',
     templateUrl: 'views.home'
@@ -22,29 +23,35 @@ mh.config ['$routeProvider', ($routeProvider) ->
         http_promise.then finish, fail
         defferred.promise
       ]
-      bio_content: ['$q', '$http', 'URLS', ($q, $http, URLS) ->
+      about_page: ['$q', '$http', 'URLS', ($q, $http, URLS) ->
         defferred = $q.defer()
-        content_url = [URLS.blog, 'page', 'content', '5429aaaa09203'].join '/'
-        content_request = $http.get content_url
+
+        content_url = [URLS.blog, 'pages'].join '/'
+        content_params = ['filter[name]', 'about'].join '='
+
+        content_request = $http.get [content_url, content_params].join('?')
 
         receive = (response) ->
-          defferred.resolve response.data
+          defferred.resolve response.data[0]
 
         content_request.then receive
 
-        defferred
+        defferred.promise
       ]
-      bio_info: ['$q', '$http', 'URLS', ($q, $http, URLS) ->
+      colors: ['$q', '$http', 'CONFIG', ($q, $http, CONFIG) ->
         defferred = $q.defer()
-        info_url = [URLS.blog, 'page', '5429aaaa09203'].join '/'
-        info_request = $http.get info_url
+
+        colors_url = [colors_sheet, CONFIG.colors_sheet].join '/'
+
+        colors_request = $http.get colors_url
 
         receive = (response) ->
-          defferred.resolve response.data
+          parsed = Papa.parse(response.data, {header: true})
+          defferred.resolve parsed.data
 
-        info_request.then receive
+        colors_request.then receive
 
-        defferred
+        defferred.promise
       ]
 
 ]
