@@ -122,6 +122,16 @@ mh.service 'Drawing', [() ->
         .innerRadius inner
         .outerRadius outer
 
+      arc_gen.playback = d3.svg.arc()
+        .startAngle () -> 0
+        .endAngle (active_track) ->
+          duration = active_track.duration()
+          position = active_track.position()
+          percent = position / duration
+          (360 * percent) * (Math.PI / 180)
+        .innerRadius () -> 75
+        .outerRadius () -> 60
+
       arc_gen
 
 ]

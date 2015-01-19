@@ -45,13 +45,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       @rotation_offsets = []
       @svg = d3.select($element[0]).append 'svg'
       @ring_container = @svg.append 'g'
-      @playback_ring = @ring_container.append 'p'
+      @playback_ring = @ring_container.append 'path'
       @arc = Drawing.arcFactory $scope
       @width = 100
       @height = 100
       @playlist = @scope.playlist
       @active_index = -1
       @playlist_rotation = 0
+
+      @playback_ring.attr
+        'fill': 'white'
 
     playNext: () -> nav.call @, 1
 
@@ -61,7 +64,10 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       @playlist_rotation += SPIN_SPEED
 
       if @active_index >= 0
+        track_instance = @tracks[@active_index]
+
         @playback_ring.attr
+          'd': @arc.playback track_instance
 
       for ring, indx in @rings
         offset = @rotation_offsets[indx]
@@ -91,8 +97,12 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
     open: () ->
       @center()
 
+      active_track = @tracks[@active_index]
+      fill_color = getColor.call @, active_track, @active_index
+
       @playback_ring.attr
         'opacity': '1.0'
+        'fill': fill_color
 
       for r, indx in @rings
         instance = @tracks[indx]
