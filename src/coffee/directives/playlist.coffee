@@ -44,11 +44,13 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       @tracks = []
       @rotation_offsets = []
       @svg = d3.select($element[0]).append 'svg'
+      @ring_container = @svg.append 'g'
+      @playback_ring = @ring_container.append 'p'
       @arc = Drawing.arcFactory $scope
       @width = 100
       @height = 100
       @playlist = @scope.playlist
-      @active_index = 0
+      @active_index = -1
       @playlist_rotation = 0
 
     playNext: () -> nav.call @, 1
@@ -58,19 +60,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
     draw: () ->
       @playlist_rotation += SPIN_SPEED
 
+      if @active_index >= 0
+        @playback_ring.attr
+
       for ring, indx in @rings
         offset = @rotation_offsets[indx]
-        if !@tracks[indx].playing and @scope.active
+        if @scope.active
           ring.rotate @playlist_rotation
-
-        else if !@tracks[indx].playing and !@scope.active
+        else
           rotation = if indx % 2 == 0 then -@playlist_rotation else @playlist_rotation
           ring.rotate offset + rotation
-
-        else
-          ring.rotate 0
-
-        ring.update()
 
     resize: (width, height) ->
       @width = width
@@ -86,12 +85,23 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       height = @height
       top = if @scope.active then 120 else height * 0.5
       left = width * 0.5
-      ring.move left, top for ring in @rings
+      @ring_container.attr
+        transform: 'translate('+(left)+','+(top)+')'
 
     open: () ->
       @center()
-      for r in @rings
-        r.path.attr 'opacity', '0.5'
+
+      @playback_ring.attr
+        'opacity': '1.0'
+
+      for r, indx in @rings
+        instance = @tracks[indx]
+
+        opacity = if instance.playing then '1.0' else '0.5'
+        r.path.transition().duration(400).ease('elastic').attr
+          'opacity': opacity
+          'd': @arc.fn instance, indx
+
         r.speed = 0.2
 
     close: () ->
@@ -99,10 +109,21 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
         @scope.active.stop()
 
       @scope.active = null
+      @active_index = -1
+
+      @playback_ring.attr
+        'opacity': '0.0'
+
       @center()
+
       for r, indx in @rings
-        r.path.attr 'opacity', '1.0'
-        r.speed = randspeed(indx)
+        instance = @tracks[indx]
+
+        r.path.transition().duration(400).ease('elastic').attr
+          'opacity': '1.0'
+          'd': @arc.fn instance, indx
+
+        r.speed = randspeed indx
 
       try
         @scope.$digest()
@@ -112,14 +133,18 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
     addTrack: (track) ->
       indx = @tracks.length
       was_clicked = false
-      group = @svg.append 'g'
+      group = @ring_container.append 'g'
       path = group.append 'path'
       fill_color = getColor.call @, track, indx
-      path.attr 'fill', fill_color
       group.attr 'data-track', track.title
 
       instance = new Audio.Track track
       arc_fn = () => @arc.fn instance, indx
+
+      path.attr
+        'fill': fill_color
+        'd': arc_fn()
+
       ring = new Drawing.Ring group, path, arc_fn
       @rotation_offsets.push (Math.random() * 1000) % 360
 
@@ -130,8 +155,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
           was_clicked = true
           instance.play()
           was_clicked = false
-
-      playing = () -> ring.update()
 
       stopped = () =>
         @scope.active = null
@@ -146,7 +169,9 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
         catch
           false
         @scope.$broadcast 'playback_start', instance
+
       mouseover = () =>
+
       mouseout = () =>
 
       ring
@@ -155,7 +180,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
         .on 'mouseout', mouseout
 
       instance
-        .on 'playback', playing
         .on 'stop', stopped
         .on 'start', started
 

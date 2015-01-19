@@ -40,20 +40,12 @@ mh.service 'Drawing', [() ->
         .on 'mouseout', out
         .on 'click', click
 
-    move: (x_pos, y_pos) ->
-      @position.x = x_pos
-      @position.y = y_pos
-      translate = ['translate(', @position.x, ',', @position.y, ')'].join ''
-      @group.attr 'transform', [translate].join(' ')
-
     rotate: (degrees) ->
       @rotation = degrees
+      rotate = ['rotate(', @rotation, ')'].join ''
+      @path.attr 'transform': rotate
 
     update: () ->
-      rotate = ['rotate(', @rotation, ')'].join ''
-      path = @arc_fn()
-      @path.attr 'transform': rotate
-      @path.attr 'd', path
 
     on: (evt, fn) ->
       if @listeners[evt] && angular.isFunction(fn)
@@ -85,7 +77,7 @@ mh.service 'Drawing', [() ->
       
       inner = (track) ->
         if $scope.active
-          play_inner = if track.playing then 20 else 80
+          play_inner = 80
           play_inner
         else
           indx = find(track)
@@ -93,7 +85,7 @@ mh.service 'Drawing', [() ->
 
       outer = (track) ->
         if $scope.active
-          play_outer = if track.playing then 35 else 95
+          play_outer = 95
           play_outer
         else
           indx = find(track)
@@ -102,20 +94,17 @@ mh.service 'Drawing', [() ->
 
       end = (track, indx) ->
         end_angle = 0
-        if track.playing
-          end_angle = calc track, track.position()
+        if $scope.active
+          start_angle = start track, indx
+          angle_width = radians track.track
+          end_angle = start_angle + angle_width
         else
-          if $scope.active
-            start_angle = start track, indx
-            angle_width = radians track.track
-            end_angle = start_angle + angle_width
-          else
-            end_angle = radians track.track
+          end_angle = radians track.track
         end_angle
 
       start = (track, indx) ->
         start_angle = 0
-        if $scope.active and indx > 0 and !track.playing
+        if $scope.active and indx > 0
           prev_track = playlist.tracks[indx - 1]
           prev_start = start prev_track, indx - 1
           prev_width = radians prev_track
