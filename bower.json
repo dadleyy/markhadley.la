@@ -23,6 +23,6 @@
     "ionicons": "~1.5.2",
     "d3": "~3.4.11",
     "analytics": "http://www.google-analytics.com/analytics.js",
-    "papaparse.js": "~4.0.7"
+    "papaparse": "~4.1.0"
   }
 }
