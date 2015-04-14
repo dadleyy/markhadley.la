@@ -9,7 +9,7 @@ DirectoryIndex index.html
   RewriteRule ^api\/blog\/(.*)$ http://wp.markhadley.la/wp-json/$1 [P,L]
   RewriteRule ^api\/waveform(.*)$ http://www.waveformjs.org/w$1 [P,L]
   RewriteRule ^api\/images\/(.*)$ http://$1 [P,L]
-
+  RewriteRule ^colors\.csv$ https://docs.google.com/spreadsheets/d/1CDeMnZmvmsJNREKJ3uUhjX-F172EveSPzP1eR10Rhwc/export?format=csv [P,L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^(.*)$ index.html?$1 [L,QSA]

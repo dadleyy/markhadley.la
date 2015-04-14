@@ -1,7 +1,6 @@
 mh.config ['$routeProvider', ($routeProvider) ->
 
   api_home = "https://api.soundcloud.com"
-  colors_sheet = "/api/content"
 
   $routeProvider.when '/',
     templateUrl: 'views.home'
@@ -41,7 +40,7 @@ mh.config ['$routeProvider', ($routeProvider) ->
       colors: ['$q', '$http', 'CONFIG', ($q, $http, CONFIG) ->
         defferred = $q.defer()
 
-        colors_url = [colors_sheet, CONFIG.colors_sheet].join '/'
+        colors_url = CONFIG.colors_sheet
 
         colors_request = $http.get colors_url
 
