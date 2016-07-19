@@ -1,6 +1,7 @@
 .playlist
   display: block
   overflow: hidden
+  position: relative
 
   .title-container
     text-align: center
@@ -10,6 +11,11 @@
 
   [data-track]
     cursor: pointer
+
+  .player-container
+    +transform(translateY(120px))
+    position: absolute
+    width: 100%
 
   .player
     margin: 20px 0

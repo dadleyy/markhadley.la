@@ -80,17 +80,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
     resize: (width, height) ->
       @width = width
       @height = height
-      @svg.attr
-        width: @width
-        height: @height
+      @svg.attr {width, height}
       @center()
       @draw()
 
     center: () ->
       width = @width
       height = @height
-      top = if @scope.active then 120 else height * 0.5
+      top = height * 0.5
       left = width * 0.5
+
       @ring_container.attr
         transform: 'translate('+(left)+','+(top)+')'
 

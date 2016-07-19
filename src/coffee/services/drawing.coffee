@@ -77,7 +77,7 @@ mh.service 'Drawing', [() ->
       
       inner = (track) ->
         if $scope.active
-          play_inner = 80
+          play_inner = 120
           play_inner
         else
           indx = find(track)
@@ -85,7 +85,7 @@ mh.service 'Drawing', [() ->
 
       outer = (track) ->
         if $scope.active
-          play_outer = 95
+          play_outer = 140
           play_outer
         else
           indx = find(track)
@@ -129,8 +129,8 @@ mh.service 'Drawing', [() ->
           position = active_track.position()
           percent = position / duration
           (360 * percent) * (Math.PI / 180)
-        .innerRadius () -> 75
-        .outerRadius () -> 60
+        .innerRadius () -> 110
+        .outerRadius () -> 130
 
       arc_gen
 
