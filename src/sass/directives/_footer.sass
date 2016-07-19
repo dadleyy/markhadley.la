@@ -37,17 +37,24 @@
         border:
           right: 0px
 
+  .social a
+    margin-right: 0.4rem
+
   .social
     +clearfix
     float: right
 
-    .icon, .icon:after
-      +transition(color 400ms ease)
-      color: darken(white, 20)
-      height: 30px
-      width: 30px
-      font-size: 16px
-      line-height: 22px
+  .icon, .icon:after,
+  .social a i, .social a i:after,
+  .social a i, .social a i:before,
+    +transition(color 400ms ease)
+    color: darken(white, 20)
+    height: 30px
+    width: 30px
+    font-size: 16px
+    line-height: 22px
+    text-align: center
 
-      &:hover:after
-        color: white
+    &:hover:after,
+    &:hover:before
+      color: white

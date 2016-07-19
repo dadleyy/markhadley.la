@@ -14,11 +14,5 @@ script:
 - grunt release
 after_success:
 - tar -cvzf "mhadley-$TRAVIS_COMMIT.tar.gz" ./public/
-- curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS
-  "ftp://ftp.sizethreestudios.com/artifacts/mhadley/$TRAVIS_COMMIT.tar.gz"
-- curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS
-  "ftp://ftp.sizethreestudios.com/artifacts/mhadley/latest.tar.gz"
-env:
-  global:
-  - secure: lT4F6tyQD6LUfWS6kXipPOG96onPe+cGiP1GmE1du/I6voeHOKFt3WQeuIcXfBXBNSuSQHrC05rjYuwUWaNCyQbYFV9rveYkVuwP/DEOFHA+ZVp7NwvypjUcRbFNQl7Q79dTs5QG0kz7ve9CJHEkjOUyD9x3JvMUHAnEzXT+EdQ=
-  - secure: Kjs+pDD2tOSvQOm6w5ltQ0p6SUwlqTSgJIR+xRhfuGeIX1X+flfStvOE4psYM8Opm2sG14YnlREZiCXVawDHyyQULjymVNlIB2S2Tw7Et0drqhfXKXH4kkv+slP9ZjPBJY/leT/b4oG8qjzWSeipOmyR7iqTwh655CLisFFB1j4=
+- curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS "ftp://ftp.sizethreestudios.com/artifacts/mhadley/$TRAVIS_COMMIT.tar.gz"
+- curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS "ftp://ftp.sizethreestudios.com/artifacts/mhadley/latest.tar.gz"
