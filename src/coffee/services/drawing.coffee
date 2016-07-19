@@ -77,7 +77,7 @@ mh.service 'Drawing', [() ->
       
       inner = (track) ->
         if $scope.active
-          play_inner = 120
+          play_inner = 140
           play_inner
         else
           indx = find(track)
@@ -85,7 +85,7 @@ mh.service 'Drawing', [() ->
 
       outer = (track) ->
         if $scope.active
-          play_outer = 140
+          play_outer = 155
           play_outer
         else
           indx = find(track)
