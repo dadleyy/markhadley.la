@@ -9,7 +9,7 @@ script:
 - npm run build:release
 after_success:
   - mkdir -p ./dist
-  - tar -cvzf "./dist/mhadley-la.tar.gz" ./public/
+  - tar -cvzf "./dist/markhadley-la.tar.gz" ./public/
 deploy:
   provider: releases
   api_key:
