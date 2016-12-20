@@ -1,21 +1,17 @@
 .env
+/dist
 .DS_Store
+npm-debug.log
 *.swp
 composer.lock
 .ruby-version
 test-results.xml
+app.conf.json
 /.sass-cache
 /obj
 /node_modules
 /bower_components
-/public/index.html
-/public/js
-/public/css
-/public/fonts
-/public/swf
-/public/svg
-/public/vendor
-/public/app.conf
+/public
 /target
 /storage
 

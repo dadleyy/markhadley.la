@@ -4,25 +4,37 @@
   "description": "Personal website for Mark Hadley",
   "author": "Danny Hadley <danny@dadleyy.com>",
   "license": "MIT",
-  "repository" : { 
-    "type" : "git",
-    "url" : "https://github.com/dadleyy/markhadley.la"
+  "scripts": {
+    "start": "./bin/server",
+    "vendor:install": "bower i",
+    "build:debug": "grunt",
+    "build:release": "grunt release",
+    "clean": "grunt clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dadleyy/markhadley.la"
   },
   "dependencies": {
+    "bower": "^1.8.0",
+    "btoa": "^1.1.1",
+    "csvtojson": "^1.0.3",
+    "dotenv": "^0.2.8",
+    "express": "^4.14.0",
     "grunt": "~0.4.4",
-    "grunt-contrib-coffee": "~0.10.1",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-watch": "~0.6.1",
     "grunt-angular-templates": "~0.5.4",
+    "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-jade": "~0.11.0",
+    "grunt-sass": "2.0.0",
     "grunt-contrib-uglify": "^0.4.0",
-    "grunt-contrib-sass": "^0.7.3",
+    "grunt-contrib-watch": "~0.6.1",
     "grunt-smash": "~0.1.0",
-    "dotenv": "~0.2.8",
     "node-bourbon": "~1.2.2",
     "node-neat": "1.3.0",
-    "btoa": "^1.1.1",
-    "grunt-contrib-concat": "^0.5.0"
+    "request": "^2.79.0"
   }
 }

@@ -6,10 +6,11 @@ html
     meta(name="description" value="Mark Hadley")
     meta(name="keywords" value="")
     meta(name="viewport" content="width=device-width, user-scalable=no")
-    link(rel='shortcut icon', href='http://media.markhadley.la/images/icon.ico')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', type='text/css')
-    link(rel='stylesheet', href='/vendor/ionicons/css/ionicons.css', type='text/css')
-    link(rel='stylesheet', href='/css/app.css', type='text/css')
+    base(href="/")
+    link(rel="shortcut icon", href="/images/icon.ico")
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css", type="text/css")
+    link(rel="stylesheet", href="/vendor/ionicons/css/ionicons.css", type="text/css")
+    link(rel="stylesheet", href="/css/app.css", type="text/css")
     // created by Danny Hadley (@dadleyy)
   body
     .bg(mh-background)
@@ -18,7 +19,7 @@ html
       div(ng-view)
     .footer(mh-footer)
     if debug
-      script(type='text/javascript', src='/js/vendor.js')
-      script(type='text/javascript', src='/js/dist.js')
+      script(type="text/javascript", src="/js/vendor.js")
+      script(type="text/javascript", src="/js/dist.js")
     else
-      script(type='text/javascript', src='/js/app.min.js')
+      script(type="text/javascript", src="/js/app.min.js")

@@ -1,11 +1,11 @@
-mh.directive 'mhDiscography', ['$timeout', 'Viewport', 'Audio', ($timeout, Viewport, Audio) ->
+mh.directive "mhDiscography", ["$timeout", "Viewport", "Audio", ($timeout, Viewport, Audio) ->
 
   mDiscography =
     replace: true
-    templateUrl: 'directives.discography'
+    templateUrl: "directives.discography"
     scope:
-      colors: '='
-      playlists: '='
+      colors: "="
+      playlists: "="
     link: ($scope, $element, $attrs) ->
       $scope.active_index = 0
 
@@ -20,10 +20,10 @@ mh.directive 'mhDiscography', ['$timeout', 'Viewport', 'Audio', ($timeout, Viewp
         if $scope.active_index > right_bound
           $scope.active_index = right_bound
 
-        $scope.$broadcast 'playlist_change', $scope.active_index
+        $scope.$broadcast "playlist_change", $scope.active_index
 
       init = () ->
-        $scope.$broadcast 'playlist_change', 0
+        $scope.$broadcast "playlist_change", 0
 
       $timeout init
 

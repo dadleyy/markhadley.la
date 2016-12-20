@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+const path    = require("path");
+const util    = require("util");
+const express = require("express");
+const request = require("request");
+const dotenv  = require("dotenv");
+const csvjs   = require("csvtojson");
+
+dotenv.load();
+
+const color_source = `https://docs.google.com/spreadsheets/d/${process.env["GOOGLE_DOC_ID"]}/gviz/tq?tqx=out:csv`;
+
+let port        = process.argv[2] || 8080;
+let app         = express();
+let assets_path = path.join(__dirname, "../public");
+let index_path  = path.join(assets_path, "index.html");
+let config_path = path.join(__dirname, "../app.conf.json");
+
+app.use(express.static(assets_path));
+
+app.get("/api/colors", function colors(req, res) { 
+  let converter = new csvjs.Converter({});
+
+  function errored(error) {
+    console.error(error);
+    res.status(500).json({error});
+  }
+
+  function finished(result) {
+    res.json(result);
+  }
+
+  converter.on("error", errored);
+  converter.on("end_parsed", finished);
+
+  request.get(color_source).pipe(converter);
+});
+
+app.get("/app.conf.json", function config(req, res) { res.sendFile(config_path); });
+
+app.use(function index(req, res) { res.sendFile(index_path); });
+
+console.log(util.format("attempting to open port %s", port));
+app.listen(port);

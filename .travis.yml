@@ -1,18 +1,20 @@
 language: node_js
 node_js:
-- '0.10'
+- "6.9.0"
 install:
-- gem install sass
-- gem install bourbon
-- gem install neat
-- npm install bower -g
-- npm install grunt-cli -g
-- bower install
 - npm install
+- npm run vendor:install
 script:
 - echo "building $TRAVIS_COMMIT"
-- grunt release
+- npm run build:release
 after_success:
-- tar -cvzf "mhadley-$TRAVIS_COMMIT.tar.gz" ./public/
-- curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS "ftp://ftp.sizethreestudios.com/artifacts/mhadley/$TRAVIS_COMMIT.tar.gz"
-- curl --ftp-create-dirs -T "mhadley-$TRAVIS_COMMIT.tar.gz" -u $FTP_USER:$FTP_PASS "ftp://ftp.sizethreestudios.com/artifacts/mhadley/latest.tar.gz"
+  - mkdir -p ./dist
+  - tar -cvzf "./dist/mhadley-la.tar.gz" ./public/
+deploy:
+  provider: releases
+  api_key:
+    secure: Bu+vRcNBvq8GkpA0HHf+vp/mrUSjXxKejmLKE0VwOFO70+p2yrZhsEpmuHwWTgQJAVq2P+N05h6EAvsqq+ulARXyPgfq4gS4a8Lp7DHcEt0JlndutDDMaD4MKXTuRB8dcbUdiND7TklQHzTU9W7G2dYrZiCfTJ8TqBGdfkhoWmQ=
+  file: dist/markhadley-la.tar.gz
+  on:
+    repo: dadleyy/markhadley.la
+    tags: true
