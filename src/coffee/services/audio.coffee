@@ -1,4 +1,6 @@
-mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics, Loop, SOUNDCLOUD_KEY) ->
+mh.service "Audio", ["$q", "Analytics", "Loop", "CONFIG", ($q, Analytics, Loop, {soundcloud}) ->
+
+  SOUNDCLOUD_KEY = atob soundcloud.client_id
 
   active_track = null
 
@@ -11,7 +13,7 @@ mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics
   class Track
 
     constructor: (@track) ->
-      client_params = ['client_id', SOUNDCLOUD_KEY].join '='
+      client_params = ["client_id", SOUNDCLOUD_KEY].join "="
       @id = @track.id
       @playing = false
       @playback_loop = null
@@ -22,7 +24,7 @@ mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics
         pause: []
 
       @sound = soundManager.createSound
-        url: [@track.stream_url, client_params].join '?'
+        url: [@track.stream_url, client_params].join "?"
 
     position: () ->
       @sound.position
@@ -42,14 +44,14 @@ mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics
     pause: () ->
       @playing = false
       active_track = null
-      trigger.call @, 'pause'
+      trigger.call @, "pause"
       @sound.stop()
 
     play: () ->
       @playing = true
 
       update = () =>
-        trigger.call @, 'playback'
+        trigger.call @, "playback"
 
       if active_track and active_track.id != @id
         active_track.stop()
@@ -57,14 +59,14 @@ mh.service 'Audio', ['$q', 'Analytics', 'Loop', 'SOUNDCLOUD_KEY', ($q, Analytics
       active_track = @
 
       @playback_loop = Loop.add update
-      trigger.call @, 'start'
-      Analytics.event 'audio', 'playback:start', @track.title
+      trigger.call @, "start"
+      Analytics.event "audio", "playback:start", @track.title
       @sound.play()
 
     stop: () ->
       @playing = false
       Loop.remove @playback_loop
-      trigger.call @, 'stop'
+      trigger.call @, "stop"
       @sound.stop()
 
     on: (evt, fn) ->

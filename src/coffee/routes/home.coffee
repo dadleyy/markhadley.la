@@ -1,56 +1,46 @@
-mh.config ['$routeProvider', ($routeProvider) ->
+mh.config ["$routeProvider", ($routeProvider) ->
 
   api_home = "https://api.soundcloud.com"
 
-  $routeProvider.when '/',
-    templateUrl: 'views.home'
-    controller: 'HomeController'
-    name: 'home'
-    resolve:
-      playlists: ['$q', '$http', 'SOUNDCLOUD_KEY', 'SOUNDCLOUD_USER', ($q, $http, SOUNDCLOUD_KEY, SOUNDCLOUD_USER) ->
-        defferred = $q.defer()
-        uri_path = [api_home, 'users', SOUNDCLOUD_USER, 'playlists.json'].join '/'
-        query_parms = ['client_id', SOUNDCLOUD_KEY].join '='
+  resolve = {}
 
-        finish = (response) ->
-          playlists = response.data
-          defferred.resolve playlists
+  resolve.playlists = ["$q", "$http", "CONFIG", ($q, $http, CONFIG) ->
+    {soundcloud} = CONFIG
+    defferred = $q.defer()
+    uri_path = [api_home, "users", soundcloud.user_id, "playlists.json"].join "/"
+    query_parms = ["client_id", atob soundcloud.client_id].join "="
 
-        fail = () ->
+    finish = (response) ->
+      playlists = response.data
+      defferred.resolve playlists
 
-        http_promise = $http.get [uri_path, query_parms].join('?')
-        http_promise.then finish, fail
-        defferred.promise
-      ]
-      about_page: ['$q', '$http', 'URLS', ($q, $http, URLS) ->
-        defferred = $q.defer()
+    fail = (err) ->
+      defferred.reject 404
 
-        content_url = [URLS.blog, 'pages'].join '/'
-        content_params = ['filter[name]', 'about'].join '='
+    http_promise = $http.get [uri_path, query_parms].join("?")
 
-        content_request = $http.get [content_url, content_params].join('?')
+    http_promise.then finish
+      .catch fail
 
-        receive = (response) ->
-          defferred.resolve response.data[0]
+    defferred.promise
+  ]
 
-        content_request.then receive
+  resolve.colors = ["$q", "$http", "CONFIG", ($q, $http, CONFIG) ->
+    {colors} = CONFIG
 
-        defferred.promise
-      ]
-      colors: ['$q', '$http', 'CONFIG', ($q, $http, CONFIG) ->
-        defferred = $q.defer()
+    unless colors.data_source
+      return $q.resolve colors
 
-        colors_url = CONFIG.colors_sheet
+    $http.get colors.data_source
+      .then ({data}) -> $q.resolve data
+  ]
 
-        colors_request = $http.get colors_url
+  home = {resolve}
 
-        receive = (response) ->
-          parsed = Papa.parse(response.data, {header: true})
-          defferred.resolve parsed.data
+  home.templateUrl = "views.home"
+  home.name        = "home"
+  home.controller  = "HomeController"
 
-        colors_request.then receive
-
-        defferred.promise
-      ]
+  $routeProvider.when "/", home
 
 ]

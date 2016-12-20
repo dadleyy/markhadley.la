@@ -1,23 +1,18 @@
 mh = do () ->
-  mh = angular.module 'mh', ['ngRoute', 'ngResource']
+  mh = angular.module "mh", ["ngRoute", "ngResource"]
 
-  loaded_config = (response) ->
-    data = response.data
-    mh.value 'CONFIG', data
-    mh.value 'URLS', data.urls
-    mh.value 'GOOGLE', data.google
-    mh.value 'BACKGROUND', data.background
+  loaded_config = ({data: config}) ->
+    mh.value "CONFIG", config
+    angular.bootstrap document, ["mh"]
 
-    if data.soundcloud and data.soundcloud.client_id
-      client_id = atob data.soundcloud.client_id
-      mh.value 'SOUNDCLOUD_KEY', client_id
-      mh.value 'SOUNDCLOUD_USER', data.soundcloud.user_id
+  failed_config = (err) ->
+    console.error err
 
-    angular.bootstrap document, ['mh']
+  injector = angular.injector ["ng"]
+  http = injector.get "$http"
 
-  failed_config = () ->
+  http.get "/app.conf.json"
+    .then loaded_config
+    .catch failed_config
 
-  injector = angular.injector ['ng']
-  http = injector.get '$http'
-  http.get('/app.conf').then loaded_config, failed_config
   mh

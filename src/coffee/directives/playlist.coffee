@@ -1,4 +1,4 @@
-mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, Loop, Audio, Drawing) ->
+mh.directive "mhPlaylist", ["Viewport", "Loop", "Audio", "Drawing", (Viewport, Loop, Audio, Drawing) ->
 
   tof = (num) ->
     parseFloat num
@@ -12,19 +12,24 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
     if indx % 2 == 0 then large else -large
 
   getColor = (track, indx) ->
-    colors = @scope.colors
+    {colors} = @scope
+    console.log colors
     playlist_id = @playlist.id
+    found_color = null
 
     for color_list in colors
       list_id = toi color_list.id
+
       if list_id == track.id
-        fount_color = color_list.color
-      else if list_id == playlist_id
-        color_options = color_list.color.split ','
+        found_color = color_list.color
+        break
+
+      if list_id == playlist_id
+        color_options = color_list.color?.split ","
         found_color = color_options[indx % color_options.length]
 
-    cleansed = (found_color or '#fff').replace /\s/g, ''
-    ['#', cleansed].join ''
+    cleansed = (found_color or "#fff").replace /\s/g, ""
+    ["#", cleansed].join ""
 
   nav = (dir) ->
     next = @active_index + dir
@@ -43,9 +48,9 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       @rings = []
       @tracks = []
       @rotation_offsets = []
-      @svg = d3.select($element[0]).append 'svg'
-      @ring_container = @svg.append 'g'
-      @playback_ring = @ring_container.append 'path'
+      @svg = d3.select($element[0]).append "svg"
+      @ring_container = @svg.append "g"
+      @playback_ring = @ring_container.append "path"
       @arc = Drawing.arcFactory $scope
       @width = 100
       @height = 100
@@ -54,7 +59,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       @playlist_rotation = 0
 
       @playback_ring.attr
-        'fill': 'white'
+        "fill": "white"
 
     playNext: () -> nav.call @, 1
 
@@ -67,7 +72,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
         track_instance = @tracks[@active_index]
 
         @playback_ring.attr
-          'd': @arc.playback track_instance
+          "d": @arc.playback track_instance
 
       for ring, indx in @rings
         offset = @rotation_offsets[indx]
@@ -91,7 +96,7 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       left = width * 0.5
 
       @ring_container.attr
-        transform: 'translate('+(left)+','+(top)+')'
+        transform: "translate("+(left)+","+(top)+")"
 
     open: () ->
       @center()
@@ -100,16 +105,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       fill_color = getColor.call @, active_track, @active_index
 
       @playback_ring.attr
-        'opacity': '1.0'
-        'fill': fill_color
+        "opacity": "1.0"
+        "fill": fill_color
 
       for r, indx in @rings
         instance = @tracks[indx]
 
-        opacity = if instance.playing then '1.0' else '0.5'
-        r.path.transition().duration(400).ease('elastic').attr
-          'opacity': opacity
-          'd': @arc.fn instance, indx
+        opacity = if instance.playing then "1.0" else "0.5"
+        r.path.transition().duration(400).ease("elastic").attr
+          "opacity": opacity
+          "d": @arc.fn instance, indx
 
         r.speed = 0.2
 
@@ -121,16 +126,16 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       @active_index = -1
 
       @playback_ring.attr
-        'opacity': '0.0'
+        "opacity": "0.0"
 
       @center()
 
       for r, indx in @rings
         instance = @tracks[indx]
 
-        r.path.transition().duration(400).ease('elastic').attr
-          'opacity': '1.0'
-          'd': @arc.fn instance, indx
+        r.path.transition().duration(400).ease("elastic").attr
+          "opacity": "1.0"
+          "d": @arc.fn instance, indx
 
         r.speed = randspeed indx
 
@@ -142,17 +147,17 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
     addTrack: (track) ->
       indx = @tracks.length
       was_clicked = false
-      group = @ring_container.append 'g'
-      path = group.append 'path'
+      group = @ring_container.append "g"
+      path = group.append "path"
       fill_color = getColor.call @, track, indx
-      group.attr 'data-track', track.title
+      group.attr "data-track", track.title
 
       instance = new Audio.Track track
       arc_fn = () => @arc.fn instance, indx
 
       path.attr
-        'fill': fill_color
-        'd': arc_fn()
+        "fill": fill_color
+        "d": arc_fn()
 
       ring = new Drawing.Ring group, path, arc_fn
       @rotation_offsets.push (Math.random() * 1000) % 360
@@ -177,34 +182,34 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
           @scope.$digest()
         catch
           false
-        @scope.$broadcast 'playback_start', instance
+        @scope.$broadcast "playback_start", instance
 
       mouseover = () =>
 
       mouseout = () =>
 
       ring
-        .on 'click', clickfn
-        .on 'mouseover', mouseover
-        .on 'mouseout', mouseout
+        .on "click", clickfn
+        .on "mouseover", mouseover
+        .on "mouseout", mouseout
 
       instance
-        .on 'stop', stopped
-        .on 'start', started
+        .on "stop", stopped
+        .on "start", started
 
       @rings.push ring
       @tracks.push instance
 
-  PlaylistController.$inject = ['$scope', '$element']
+  PlaylistController.$inject = ["$scope", "$element"]
 
   mhPlaylist =
     replace: true
-    templateUrl: 'directives.playlist'
+    templateUrl: "directives.playlist"
     controller: PlaylistController
     scope:
-      playlist: '='
-      index: '='
-      colors: '='
+      playlist: "="
+      index: "="
+      colors: "="
     link: ($scope, $element, $attrs, playlist_controller) ->
       $scope.active = null
       loop_id = null
@@ -232,6 +237,6 @@ mh.directive 'mhPlaylist', ['Viewport', 'Loop', 'Audio', 'Drawing', (Viewport, L
       playlist_controller.addTrack track for track in $scope.playlist.tracks
       resize()
 
-      $scope.$on 'playlist_change', toggle
+      $scope.$on "playlist_change", toggle
 
 ]
