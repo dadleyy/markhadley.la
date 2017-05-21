@@ -12,8 +12,11 @@ after_success:
 - tar -cvzf "./dist/web.tar.gz" ./public/
 deploy:
   provider: releases
+  skip_cleanup: true
   api_key:
     secure: fhw0Q4DfRUreveSkVFHDHYsXFCKtHi2pUPxhrIgz6C2XHFaBj1OmomrPLMVtIy/TGyATDViQssC01rDEtsAIaQKdgzARvMEZyjNAVM+wjwNJ2Lt/P6RZmvsAxIVv0XHzPBCgaSN3EhLK458WGJO8/yJxQ7xjh9iVPodqqUKAzdI=
-  file: ./dist/web.tar.gz
+  file:
+    - ./dist/web.tar.gz
   on:
     repo: dadleyy/markhadley.la
+    tags: true
