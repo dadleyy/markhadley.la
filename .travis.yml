@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- "6.9.0"
+- 6.9.0
 install:
 - npm install
 - npm run vendor:install
@@ -8,13 +8,12 @@ script:
 - echo "building $TRAVIS_COMMIT"
 - npm run build:release
 after_success:
-  - mkdir -p ./dist
-  - tar -cvzf "./dist/markhadley-la.tar.gz" ./public/
+- mkdir -p ./dist
+- tar -cvzf "./dist/markhadley-la.tar.gz" ./public/
 deploy:
   provider: releases
   api_key:
-    secure: Bu+vRcNBvq8GkpA0HHf+vp/mrUSjXxKejmLKE0VwOFO70+p2yrZhsEpmuHwWTgQJAVq2P+N05h6EAvsqq+ulARXyPgfq4gS4a8Lp7DHcEt0JlndutDDMaD4MKXTuRB8dcbUdiND7TklQHzTU9W7G2dYrZiCfTJ8TqBGdfkhoWmQ=
+    secure: fhw0Q4DfRUreveSkVFHDHYsXFCKtHi2pUPxhrIgz6C2XHFaBj1OmomrPLMVtIy/TGyATDViQssC01rDEtsAIaQKdgzARvMEZyjNAVM+wjwNJ2Lt/P6RZmvsAxIVv0XHzPBCgaSN3EhLK458WGJO8/yJxQ7xjh9iVPodqqUKAzdI=
   file: dist/markhadley-la.tar.gz
   on:
     repo: dadleyy/markhadley.la
-    tags: true
