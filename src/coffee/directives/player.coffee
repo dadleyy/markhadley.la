@@ -24,6 +24,4 @@ mh.directive 'mhPlayer', ['Audio', (Audio) ->
 
       $scope.playing = () ->
         $scope.track.isPlaying()
-
-
 ]

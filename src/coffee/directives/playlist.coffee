@@ -13,7 +13,6 @@ mh.directive "mhPlaylist", ["Viewport", "Loop", "Audio", "Drawing", (Viewport, L
 
   getColor = (track, indx) ->
     {colors} = @scope
-    console.log colors
     playlist_id = @playlist.id
     found_color = null
 
@@ -174,6 +173,8 @@ mh.directive "mhPlaylist", ["Viewport", "Loop", "Audio", "Drawing", (Viewport, L
         @scope.active = null
         @close()
 
+      finished = => do @playNext
+
       started = () =>
         @scope.active = instance
         @active_index = indx
@@ -196,6 +197,7 @@ mh.directive "mhPlaylist", ["Viewport", "Loop", "Audio", "Drawing", (Viewport, L
       instance
         .on "stop", stopped
         .on "start", started
+        .on "finished", finished
 
       @rings.push ring
       @tracks.push instance

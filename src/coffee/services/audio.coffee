@@ -22,9 +22,13 @@ mh.service "Audio", ["$q", "Analytics", "Loop", "CONFIG", ($q, Analytics, Loop, 
         stop: []
         playback: []
         pause: []
+        finished: []
+
+      _trigger = (args...) => trigger.apply(this, args)
 
       @sound = soundManager.createSound
         url: [@track.stream_url, client_params].join "?"
+        onfinish: => _trigger "finished"
 
     position: () ->
       @sound.position
